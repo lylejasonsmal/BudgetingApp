@@ -29,6 +29,7 @@ namespace MyFirstApp.Services.Implementations.BudgetFixtureService
         {
             var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
 
+            //Initialize values for calculation
             currentMonthlyBudgetFixture.BudgetedForAmount = 0;
             currentMonthlyBudgetFixture.LeftOverAmount = currentMonthlyBudgetFixture.StoredNetSalary;
 
