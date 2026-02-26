@@ -1,0 +1,41 @@
+﻿@inject MonthlyBudgetFixtureRepository MonthlyBudgetFixtureRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+
+@if (_budgetFixture is not null)
+{
+    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="gesture">
+        <h6>Net Salary</h6>
+        <h2>R@_budgetFixture.StoredNetSalary</h2>
+        <br/>
+        
+        <h6>Budgeted For:</h6>
+        <h2>R@_budgetFixture.BudgetedForAmount</h2>
+        <br />
+
+        <h6>Actual Expenditure:</h6>
+        <h2>R@(_budgetFixture.StoredNetSalary - _budgetFixture.LeftOverAmount)</h2>
+        <br />
+        
+        <h6>Amount Left Over:</h6>
+        <h2>R@_budgetFixture.LeftOverAmount</h2>
+    </CardWrapperComponent>
+}
+else
+{
+    <CardWrapperComponent IsLoading="true">
+    </CardWrapperComponent>
+}
+
+@code {
+    [Parameter] public required int Id { get; set; }
+    private MonthlyBudgetFixtureModel? _budgetFixture;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _budgetFixture = await MonthlyBudgetFixtureRepository.GetByIdAsync(Id);
+            await InvokeAsync(StateHasChanged);
+        });
+     }
+}

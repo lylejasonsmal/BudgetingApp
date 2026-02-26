@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="MyFirstApp.Domain/MyFirstApp.Domain.csproj" Id="de49aa90-c262-4126-93f1-634882b0b055" />
+  <Project Path="MyFirstApp.Services/MyFirstApp.Services.csproj" Id="b1f013bb-e686-4a0a-81fa-70af2ddfd92f" />
+  <Project Path="MyFirstAppComponentLibrary/MyFirstAppComponentLibrary.csproj" />
+  <Project Path="MyFirstAppHybrid/MyFirstAppHybrid.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="MyFirstAppTestProject/MyFirstAppTestProject.csproj" />
+</Solution>

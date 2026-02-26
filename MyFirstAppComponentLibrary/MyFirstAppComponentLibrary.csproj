@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\BasePage\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MyFirstApp.Domain\MyFirstApp.Domain.csproj" />
+	  <ProjectReference Include="..\MyFirstApp.Services\MyFirstApp.Services.csproj" />
+	</ItemGroup>
+
+
+</Project>

@@ -1,0 +1,11 @@
+﻿using MyFirstApp.Domain.Models;
+using MyFirstApp.Services.Interfaces.PublisherService;
+
+namespace MyFirstApp.Services.Interfaces
+{
+    public interface IMonthlyBudgetFixtureService : IPublisher<MonthlyBudgetFixtureModel>
+    {
+        Task SubscribeAsync(Func<MonthlyBudgetFixtureModel, Task> handler);
+        Task RecalculateAndUpdateBudgetFixtureAsync();
+    }
+}

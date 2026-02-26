@@ -1,0 +1,90 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bolder;
+    outline: none;
+    margin: 0;
+}
+
+:root {
+    --soft-blush-pink: #F4C7C3;
+    --light-bubblegum-pink: #F7A8D0;
+    --lavender-pink: #D6A4F0;
+    --peachy-pink: #FFD5C4;
+    --creamy-off-white: #FFF1E6;
+    --muted-lilac-pink: #D998D8;
+    --primary-black: #282828;
+    --secondary-black: #323232;
+    --border-black: #484848;
+}
+
+body {
+    background: var(--primary-black);
+    color: var(--lavender-pink);
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1vh;
+    padding: 10px;
+    width: 100vw;
+    overflow-y: scroll;
+    margin: 0px;
+    margin-bottom: 10vh;
+}
+
+a {
+    color: var(--primary-black);
+    text-decoration: none;
+}
+
+input {
+    border: 1px solid var(--border-black);
+    border-radius: 25px;
+    min-height: 30px;
+    padding: 10px;
+    width: 100%;
+    background: var(--secondary-black);
+    outline: none;
+    box-shadow: none;
+    caret-color: var(--lavender-pink);
+    color: var(--creamy-off-white);
+    font-weight: 500;
+}
+
+input:focus {
+    border: 1px solid var(--lavender-pink);
+    outline: none;
+    box-shadow: none;
+    color: var(--lavender-pink);
+}
+
+textarea {
+    border: 1px solid var(--border-black);
+    border-radius: 25px;
+    min-height: 80px;
+    padding: 10px;
+    width: 100%;
+    background: var(--secondary-black);
+    outline: none;
+    box-shadow: none;
+    caret-color: var(--lavender-pink);
+    color: var(--creamy-off-white);
+    font-weight: 500;
+    resize: vertical;
+    font-family: inherit;
+}
+
+textarea:focus {
+    border: 1px solid var(--lavender-pink);
+    outline: none;
+    box-shadow: none;
+    color: var(--lavender-pink);
+}

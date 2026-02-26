@@ -1,0 +1,198 @@
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/CardWrapperComponent.razor.rz.scp.css */
+.card[b-0ger2c1501] {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 15px;
+    padding: 0;
+    background: var(--primary-black);
+    color: var(--creamy-off-white);
+    overflow: hidden;
+    border: 1px solid var(--border-black);
+}
+
+.card-header[b-0ger2c1501] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: var(--primary-black);
+    color: var(--creamy-off-white);
+    border-bottom: 1px solid var(--border-black);
+}
+
+.icon-button[b-0ger2c1501]{
+    height: 100%;
+    aspect-ratio: 1/1;
+}
+
+.card-body[b-0ger2c1501] {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+.link[b-0ger2c1501] {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 5vh;
+    border-top: 1px solid var(--border-black);
+    color: var(--lavender-pink);
+}
+
+.shimmer[b-0ger2c1501] {
+    position: relative;
+    overflow: hidden;
+    background: var(--secondary-black);
+    border-radius: 0px;
+    min-height: 5vh;
+}
+
+.shimmer[b-0ger2c1501]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient( 45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100% );
+    animation: shimmer-b-0ger2c1501 1.5s infinite;
+}
+
+@keyframes shimmer-b-0ger2c1501 {
+    0% {
+        transform: translateX(-150%);
+    }
+
+    100% {
+        transform: translateX(150%);
+    }
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/MaterialDesignIconComponent.razor.rz.scp.css */
+.material-symbols-outlined[b-mvf7z1p1va] {
+    font-family: 'Material Symbols Outlined' !important;
+    font-variation-settings: 'FILL' 1, 'wght' 800, 'GRAD' 50, 'opsz' 48;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/PopupWrapperComponent.razor.rz.scp.css */
+.popup-container[b-dz8qorjlsg] {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+}
+
+.popup[b-dz8qorjlsg] {
+    background: var(--primary-black);
+    width: 80vw;
+    min-height: 50vh;
+    border: 2px solid var(--border-black);
+    border-radius: 15px;
+}
+
+.popup-header[b-dz8qorjlsg] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-height: 50px;
+    border-bottom: 1px solid var(--border-black);
+    padding: 10px;
+    color: var(--creamy-off-white);
+}
+
+.popup-body[b-dz8qorjlsg] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/EditExpensePopupComponent.razor.rz.scp.css */
+.body[b-62vizmllzq]{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/ExpenseComponent.razor.rz.scp.css */
+.main-body[b-933qsapzfe] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 0px;
+}
+
+.container[b-933qsapzfe] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 0px;
+}
+
+.info-card[b-933qsapzfe] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--primary-black);
+    background: var(--lavender-pink);
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 100px;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/NavigationBarComponent.razor.rz.scp.css */
+.navigation-bar[b-mhmy4p8bay] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    background: var(--primary-black);
+    height: 90px;
+    overflow: hidden;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-top: 1px solid var(--border-black);
+}
+
+.navigation-container[b-mhmy4p8bay] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 125%;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    transition: ease-in-out 0.2s;
+    color: var(--lavender-pink);
+}
+
+.active[b-mhmy4p8bay] {
+    color: var(--creamy-off-white) !important;
+    background: var(--border-black);
+    border: 5px solid var(--lavender-pink);
+}
+
+.navigation-container:hover[b-mhmy4p8bay]{
+    opacity: 75%;
+}

@@ -1,0 +1,43 @@
+﻿@namespace UI.Pages
+@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@page "/"
+
+<div class="page">
+    @if (_currentBudgetFixtureId is not null)
+    {
+        <BudgetFixtureComponent Id="@_currentBudgetFixtureId.Value"/>
+    }
+
+    @if (_expenseIds is not null)
+    {
+        <h1>Expenses</h1>
+        @foreach (var expenseId in _expenseIds)
+        {
+            <ExpenseComponent Id="@expenseId"/>
+        }
+    }
+</div>
+
+@code
+{
+    private IReadOnlyList<int>? _expenseIds;
+    private int? _currentBudgetFixtureId;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _currentBudgetFixtureId = model.Id;
+
+            if (_currentBudgetFixtureId is not null)
+            {
+                _expenseIds = await ExpenseRepository.GetExpenseIdsByFixtureIdAsync(_currentBudgetFixtureId);
+            }
+
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+}

@@ -1,0 +1,80 @@
+﻿@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Expense">
+    <div class="body">
+        <div>
+            <h6>Expense Name</h6>
+            <input placeholder="Expense Name" @bind="_expenseName"/>
+        </div>
+        
+        <div>
+            <h6>Budgeted For Amount</h6>
+            <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
+        </div>
+        
+        <div>
+            <h6>Actual Amount</h6>
+            <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
+        </div>
+        
+        <div>
+            <h6>Notes</h6>
+            <textarea placeholder="Notes" @bind="_notes"></textarea>
+        </div>
+
+    </div>
+
+    <div class="popup-actions">
+        <button @onclick="Cancel">Cancel</button>
+        <button @onclick="Save">Save</button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public required int Id { get; set; }
+
+    private ExpenseModel? _expense;
+
+    private string? _expenseName;
+    private double? _budgetedForAmount;
+    private double? _actualAmount;
+    private string? _notes;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _expense = await ExpenseRepository.GetByIdAsync(Id);
+
+        if (_expense is not null)
+        {
+            _expenseName = _expense.ExpenseName;
+            _budgetedForAmount = _expense.BudgetedForAmount;
+            _actualAmount = _expense.ActualAmount;
+            _notes = _expense.Notes;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Cancel()
+    {
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task Save()
+    {
+        if (_expense is not null)
+        {
+            _expense.ExpenseName = _expenseName;
+            _expense.BudgetedForAmount = _budgetedForAmount;
+            _expense.ActualAmount = _actualAmount;
+            _expense.Notes = _notes;
+            await ExpenseRepository.UpdateAsync(_expense);
+            await MonthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
+        }
+
+        await VisibleChanged.InvokeAsync(false);
+    }
+}

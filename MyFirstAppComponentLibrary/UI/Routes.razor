@@ -1,0 +1,11 @@
+﻿@using MyFirstAppComponentLibrary.UI.Layout
+
+<Router AppAssembly="@typeof(Routes).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <h6 class="page">Under Development. Check Back Soon!</h6>
+    </NotFound>
+</Router>

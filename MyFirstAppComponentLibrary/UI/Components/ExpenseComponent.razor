@@ -1,0 +1,57 @@
+﻿@using MyFirstApp.Services.Repositories
+@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+
+@if (_expense is not null)
+{
+    <CardWrapperComponent HeaderText="@_expense.ExpenseName" IconName="edit_note" OnIconClick="OpenPopupAsync">
+        <div class="main-body">
+            <div class="container">
+                <div class="info-card">
+                    <h6>Budgeted Amount</h6>
+                    <h2>R@_expense.BudgetedForAmount</h2>
+                </div>
+                <div class="info-card">
+                    <h6>Actual Amount</h6>
+                    <h2>R@_expense.ActualAmount</h2>
+                </div>
+            </div>
+            <div class="container">
+                @if (_expense.Notes is not null)
+                {
+                    <div class="info-card">
+                        <h6>Additional Notes</h6>
+                        <p>@_expense.Notes</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </CardWrapperComponent>
+
+    <EditExpensePopupComponent @bind-Visible="_showPopup" Id="_expense.Id" />
+}
+else
+{
+    <CardWrapperComponent IsLoading="true">
+    </CardWrapperComponent>
+}
+
+@code {
+    [Parameter] public required int Id { get; set; }
+    private ExpenseModel? _expense;
+    private bool _showPopup;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _expense = await ExpenseRepository.GetByIdAsync(Id);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void OpenPopupAsync()
+    {
+        _showPopup = true;
+    }
+}

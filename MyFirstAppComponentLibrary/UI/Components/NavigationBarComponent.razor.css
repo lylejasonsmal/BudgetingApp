@@ -1,0 +1,37 @@
+.navigation-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    background: var(--primary-black);
+    height: 90px;
+    overflow: hidden;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-top: 1px solid var(--border-black);
+}
+
+.navigation-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 125%;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    transition: ease-in-out 0.2s;
+    color: var(--lavender-pink);
+}
+
+.active {
+    color: var(--creamy-off-white) !important;
+    background: var(--border-black);
+    border: 5px solid var(--lavender-pink);
+}
+
+.navigation-container:hover{
+    opacity: 75%;
+}

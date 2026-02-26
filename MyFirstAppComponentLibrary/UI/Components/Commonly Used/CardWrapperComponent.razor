@@ -1,0 +1,63 @@
+﻿<div id="card" class="card">
+    @if (IsLoading)
+    {
+        <div class="card-header shimmer"></div>
+        <div class="card-body shimmer"></div>
+        <div class="card-footer shimmer"></div>
+    }
+    else
+    {
+        @if (HeaderText is not null)
+        {
+            <div id="card-header" class="card-header">
+                <h6 id="title">@HeaderText</h6>
+                @if (IconName is not null)
+                {
+                    <div class="icon-button" @onclick="@OnIconClick">
+                        <MaterialDesignIconComponent IconName="@IconName"/>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (ChildContent is not null)
+        {
+            <div id="card-body" class="card-body">
+                @ChildContent
+            </div>
+        }
+
+        @if (Link is not null)
+        {
+            <div id="card-footer">
+                <NavLink href="@Link" class="link">
+                    <div class="link">
+                        <h6>Navigate</h6>
+                        <MaterialDesignIconComponent IconName="chevron_right" />
+                    </div>
+                </NavLink>
+            </div>
+        }
+    }
+</div>
+
+@code
+{
+
+    [Parameter] public string? HeaderText{ get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? IconName { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public bool IsLoading { get; set; } = true;
+    [Parameter] public EventCallback OnIconClick { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        if (ChildContent is not null)
+        {
+            IsLoading = false;
+        }
+
+        return Task.CompletedTask;
+    }
+}

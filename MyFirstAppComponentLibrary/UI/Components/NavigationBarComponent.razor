@@ -1,0 +1,61 @@
+﻿@inject NavigationManager navigationManager
+
+<div id="navigation-bar" class="navigation-bar">
+
+    <div class="navigation-container @(IsActive("/") ? "active" : "")"
+         @onclick="GoToThread">
+        <MaterialDesignIconComponent IconName="gesture" />
+        <h6 id="thread-navigation-link">Thread</h6>
+    </div>
+
+    <div class="navigation-container @(IsActive("/statistics-dashboard") ? "active" : "")"
+         @onclick="GoToStats">
+        <MaterialDesignIconComponent IconName="pie_chart" />
+        <h6 id="stats-navigation-link">Statistics</h6>
+    </div>
+
+    <div class="navigation-container @(IsActive("/profile") ? "active" : "")"
+         @onclick="GoToProfile">
+        <MaterialDesignIconComponent IconName="person" />
+        <h6 id="profile-navigation-link">Profile</h6>
+    </div>
+
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        navigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void GoToThread()
+    {
+        navigationManager.NavigateTo("/");
+    }
+
+    private void GoToStats()
+    {
+        navigationManager.NavigateTo("/statistics-dashboard");
+    }
+
+    private void GoToProfile()
+    {
+        navigationManager.NavigateTo("/profile");
+    }
+
+    private bool IsActive(string route)
+    {
+        var relativePath = "/" + navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        return relativePath == route;
+    }
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= HandleLocationChanged;
+    }
+}

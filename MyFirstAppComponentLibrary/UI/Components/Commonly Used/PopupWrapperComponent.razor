@@ -1,0 +1,29 @@
+﻿@if (Visible)
+{
+    <div class="popup-container">
+        <div class="popup">
+            <div class="popup-header">
+                <h5>@HeaderText</h5>
+                <div @onclick="Close">
+                    <MaterialDesignIconComponent IconName="close"/>
+                </div>
+            </div>
+
+            <div class="popup-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public required RenderFragment ChildContent { get; set; }
+
+    private async Task Close()
+    {
+        await VisibleChanged.InvokeAsync(false);
+    }
+}
