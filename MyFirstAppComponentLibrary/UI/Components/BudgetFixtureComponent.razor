@@ -4,20 +4,34 @@
 @if (_budgetFixture is not null)
 {
     <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="gesture">
-        <h6>Net Salary</h6>
-        <h2>R@_budgetFixture.StoredNetSalary</h2>
-        <br/>
-        
-        <h6>Budgeted For:</h6>
-        <h2>R@_budgetFixture.BudgetedForAmount</h2>
-        <br />
+        <div class="card-body">
+            <div class="info-card">
+                <p>Net Salary</p>
+                <h2>R@_budgetFixture.StoredNetSalary</h2>
+            </div>
+            
+            <h6>Summary</h6>
+            <div class="info-card">
+                <p>Budgeted For</p>
+                <h2>R@_budgetFixture.BudgetedForAmount</h2>
+            </div>
 
-        <h6>Actual Expenditure:</h6>
-        <h2>R@(_budgetFixture.StoredNetSalary - _budgetFixture.LeftOverAmount)</h2>
-        <br />
-        
-        <h6>Amount Left Over:</h6>
-        <h2>R@_budgetFixture.LeftOverAmount</h2>
+            <div class="info-card">
+                <p>Actual Expenditure</p>
+                <h2>R@(_budgetFixture.StoredNetSalary - _budgetFixture.LeftOverAmount)</h2>
+            </div>
+
+            <div class="info-card">
+                <p>Amount Left Over</p>
+                <h2>R@_budgetFixture.LeftOverAmount</h2>
+            </div>
+            
+            <h6>Insights</h6>
+            <div class="info-card">
+                <MaterialDesignIconComponent IconName="analytics" />
+                <p>This is where insights about your monthly budget will go.</p>
+            </div>
+        </div>
     </CardWrapperComponent>
 }
 else

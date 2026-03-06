@@ -12,6 +12,8 @@
     @if (_expenseIds is not null)
     {
         <h1>Expenses</h1>
+        <p>@_expenseIds.Count expenses listed</p>
+
         @foreach (var expenseId in _expenseIds)
         {
             <ExpenseComponent Id="@expenseId"/>

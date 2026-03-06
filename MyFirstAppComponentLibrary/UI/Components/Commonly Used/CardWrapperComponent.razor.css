@@ -4,8 +4,8 @@
     width: 100%;
     border-radius: 15px;
     padding: 0;
-    background: var(--primary-black);
-    color: var(--creamy-off-white);
+    background: var(--primary-card-background);
+    color: var(--primary-card-foreground);
     overflow: hidden;
     border: 1px solid var(--border-black);
 }
@@ -16,8 +16,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    background: var(--primary-black);
-    color: var(--creamy-off-white);
+    background: var(--primary-card-background);
+    color: var(--primary-card-foreground);
     border-bottom: 1px solid var(--border-black);
 }
 
@@ -38,9 +38,8 @@
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-    height: 5vh;
     border-top: 1px solid var(--border-black);
-    color: var(--lavender-pink);
+    color: var(--primary-font-color);
 }
 
 .shimmer {

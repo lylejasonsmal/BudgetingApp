@@ -6,8 +6,8 @@
     position: fixed;
     bottom: 0;
     width: 100vw;
-    background: var(--primary-black);
-    height: 90px;
+    background: var(--primary-nav-bar-background);
+    height: 75px;
     overflow: hidden;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
@@ -23,13 +23,13 @@
     aspect-ratio: 1/1;
     border-radius: 100%;
     transition: ease-in-out 0.2s;
-    color: var(--lavender-pink);
+    color: var(--primary-nav-bar-foreground);
 }
 
 .active {
     color: var(--creamy-off-white) !important;
     background: var(--border-black);
-    border: 5px solid var(--lavender-pink);
+    border: 5px solid var(--primary-button-background);
 }
 
 .navigation-container:hover{
