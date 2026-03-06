@@ -1,31 +1,61 @@
-﻿@using MyFirstApp.Services.Repositories
-@inject ExpenseRepository ExpenseRepository
+﻿@inject ExpenseRepository ExpenseRepository
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject IExpenseService ExpenseService
 
 @if (_expense is not null)
 {
     <CardWrapperComponent HeaderText="@_expense.ExpenseName" IconName="edit_note" OnIconClick="OpenPopupAsync">
-        <div class="main-body">
+        <div class="main-body @(_expense.IsPaidFor? "paid-expense" : "")">
             <div class="container">
                 <div class="info-card">
-                    <h6>Budgeted Amount</h6>
-                    <h2>R@_expense.BudgetedForAmount</h2>
-                </div>
-                <div class="info-card">
-                    <h6>Actual Amount</h6>
-                    <h2>R@_expense.ActualAmount</h2>
-                </div>
-            </div>
-            <div class="container">
-                @if (_expense.Notes is not null)
-                {
-                    <div class="info-card">
-                        <h6>Additional Notes</h6>
-                        <p>@_expense.Notes</p>
+                    <div>
+                        <MaterialDesignIconComponent IconName="calendar_month" />
+                        <h6>
+                            Budgeted
+                        </h6>
+                        <h1>R@_expense.BudgetedForAmount</h1>
                     </div>
-                }
+                </div>
+
+                <div class="info-card">
+                    <div>
+                        <MaterialDesignIconComponent IconName="calendar_today"/>
+                        <h6>
+                            Actual
+                        </h6>
+                        <h1>R@_expense.ActualAmount</h1>
+                    </div>
+                    <div>
+                        <div class="icon @(_expense.ActualAmount > _expense.BudgetedForAmount ? "error" : "")">
+                            <MaterialDesignIconComponent IconName="@(_expense.ActualAmount > _expense.BudgetedForAmount ? "arrow_upward" : "check")"/>
+                        </div>
+                        <p class="caption">@(_expense.ActualAmount > _expense.BudgetedForAmount ? "Above Your Budget" : "Within Your Budget")</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="container">
+                <div class="info-card">
+                    <MaterialDesignIconComponent IconName="comment"/>
+                    <p>@_expense.Notes</p>
+                </div>
             </div>
         </div>
+        
+        @if (!_expense.IsPaidFor)
+        {
+            <div class="container">
+                <h6>Is this expense paid for?</h6>
+                <button @onclick="TogglePaidStateAsync">Yes</button>
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                <button class="secondary-button" @onclick="TogglePaidStateAsync">Not Paid For Yet?</button>
+            </div>
+        }
     </CardWrapperComponent>
 
     <EditExpensePopupComponent @bind-Visible="_showPopup" Id="_expense.Id" />
@@ -53,5 +83,14 @@ else
     private void OpenPopupAsync()
     {
         _showPopup = true;
+    }
+
+    private async Task TogglePaidStateAsync()
+    {
+        if (_expense is not null)
+        {
+            _expense.IsPaidFor = !_expense.IsPaidFor;
+            await ExpenseService.UpdateExpenseAsync(_expense);
+        }
     }
 }

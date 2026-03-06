@@ -12,9 +12,9 @@
 }
 
 .popup {
-    background: var(--primary-black);
-    width: 80vw;
-    min-height: 50vh;
+    background: var(--primary-popup-background);
+    width: 90vw;
+    min-height: 75vh;
     border: 2px solid var(--border-black);
     border-radius: 15px;
 }
@@ -28,7 +28,7 @@
     min-height: 50px;
     border-bottom: 1px solid var(--border-black);
     padding: 10px;
-    color: var(--creamy-off-white);
+    color: var(--primary-popup-foreground);
 }
 
 .popup-body {

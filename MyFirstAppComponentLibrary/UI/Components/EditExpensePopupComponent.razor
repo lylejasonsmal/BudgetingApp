@@ -1,5 +1,5 @@
 ﻿@inject ExpenseRepository ExpenseRepository
-@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject IExpenseService ExpenseService
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Expense">
     <div class="body">
@@ -26,7 +26,7 @@
     </div>
 
     <div class="popup-actions">
-        <button @onclick="Cancel">Cancel</button>
+        <button class="secondary-button" @onclick="Cancel">Cancel</button>
         <button @onclick="Save">Save</button>
     </div>
 </PopupWrapperComponent>
@@ -71,8 +71,7 @@
             _expense.BudgetedForAmount = _budgetedForAmount;
             _expense.ActualAmount = _actualAmount;
             _expense.Notes = _notes;
-            await ExpenseRepository.UpdateAsync(_expense);
-            await MonthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
+            await ExpenseService.UpdateExpenseAsync(_expense);
         }
 
         await VisibleChanged.InvokeAsync(false);

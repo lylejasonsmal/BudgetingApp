@@ -13,7 +13,9 @@ public class SqliteDatabaseService
     public async Task<SQLiteAsyncConnection> GetConnectionAsync()
     {
         if (_db != null)
+        {
             return _db;
+        }
 
         string path = Path.Combine(FileSystem.AppDataDirectory, "budgetApp.sqlite");
         _db = new SQLiteAsyncConnection(path);

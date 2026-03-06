@@ -1,0 +1,91 @@
+﻿@inject IJSRuntime JS
+
+<CardWrapperComponent HeaderText="App Settings" IconName="settings">
+    <div class="card-body">
+        <h4>Current Color Scheme</h4>
+    <p>@(_isDarkMode ? "'Dark Mode'" : "'Light Mode'")</p>
+
+    <button @onclick="ToggleThemeAsync">
+        @(_isDarkMode ? "Switch To Light Mode" : "Switch To Dark Mode")
+        </button>
+    </div>
+
+    <div class="card-body">
+        <h4>Current Font</h4>
+        <p>@($"'{_fonts[_currentFontIndex]}'")</p>
+        
+        @foreach (var font in _fonts)
+        {
+            @if (font != _fonts[_currentFontIndex])
+            {
+                <button @onclick="() => SetCurrentFontAsync(font)">
+                    @($"Switch To '{font}'")
+                </button>
+            }
+        }
+    </div>
+    
+    <div class="card-body">
+        <h4>Experimental</h4>
+        <p>Experimental Theme*</p>
+
+        <button @onclick="ToggleExperimentalThemeAsync">
+            @(_isExperimental ? "Reset" : "Experiment")
+        </button>
+    </div>
+</CardWrapperComponent>
+
+@code {
+    private bool _isDarkMode = true;
+    private int _currentFontIndex;
+    private bool _isExperimental;
+
+    private readonly string[] _fontClassNames = ["default-font", "secondary-font", "tertiary-font", "quaternary-font"];
+    private readonly string[] _fonts = ["Poppins", "Borel", "Pacifico", "Twinkle Star"];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var savedTheme = await JS.InvokeAsync<string>("getSavedTheme");
+
+            if (!string.IsNullOrEmpty(savedTheme))
+            {
+                _isDarkMode = savedTheme == "dark-theme";
+                await JS.InvokeVoidAsync("setTheme", savedTheme);
+            }
+
+            var savedFont = await JS.InvokeAsync<string>("getSavedFont");
+            if (!string.IsNullOrEmpty(savedFont))
+            {
+                _currentFontIndex = Array.IndexOf(_fontClassNames, savedFont);
+                if (_currentFontIndex == -1) _currentFontIndex = 0;
+                await JS.InvokeVoidAsync("setFont", _fontClassNames[_currentFontIndex]);
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        _isDarkMode = !_isDarkMode;
+        var theme = _isDarkMode ? "dark-theme" : "light-theme";
+        await JS.InvokeVoidAsync("setTheme", theme);
+    }
+
+    private async Task SetCurrentFontAsync(string font)
+    {
+        var index = Array.IndexOf(_fonts, font);
+        _currentFontIndex = index;
+        await JS.InvokeVoidAsync("setFont", _fontClassNames[index]);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ToggleExperimentalThemeAsync()
+    {
+        _isExperimental = !_isExperimental;
+        var experimental = _isExperimental ? "experimental" : "";
+        await JS.InvokeVoidAsync("setExperimentalTheme", experimental);
+    }
+}

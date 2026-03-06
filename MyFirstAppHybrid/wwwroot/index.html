@@ -18,5 +18,49 @@
 <div class="status-bar-safe-area"></div>
 <div id="app" class="page"><h6>Loading...</h6></div>
 <script src="_framework/blazor.webview.js" autostart="false"></script>
+<script>
+    (function () {
+        const savedTheme = localStorage.getItem("app-theme");
+        const theme = savedTheme || "dark-theme";
+
+        document.body.classList.remove("light-theme", "dark-theme");
+        document.body.classList.add(theme);
+
+        const savedFont = localStorage.getItem("app-font");
+        const font = savedFont || "default-font";
+
+        document.body.classList.remove("default-font", "secondary-font", "tertiary-font");
+        document.body.classList.add(font);
+    })();
+
+    window.setTheme = function (theme) {
+        document.body.classList.remove("light-theme", "dark-theme");
+        document.body.classList.add(theme);
+        localStorage.setItem("app-theme", theme);
+    };
+
+    window.getSavedTheme = function () {
+        return localStorage.getItem("app-theme");
+    };
+
+    window.setFont = function (font) {
+        document.body.classList.remove("default-font", "secondary-font", "tertiary-font", "quaternary-font");
+        document.body.classList.add(font);
+        localStorage.setItem("app-font", font);
+    };
+
+    window.getSavedFont = function () {
+        return localStorage.getItem("app-font");
+    };
+
+    window.setExperimentalTheme = function (themeClass) {
+        document.body.classList.remove("experimental");
+
+        if (themeClass && themeClass.trim() !== "") {
+            document.body.classList.add(themeClass);
+        }
+    };
+
+</script>
 </body>
 </html>

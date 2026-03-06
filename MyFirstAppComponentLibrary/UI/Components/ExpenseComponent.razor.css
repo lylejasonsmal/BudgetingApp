@@ -7,24 +7,16 @@
     padding: 0px;
 }
 
+.paid-expense {
+    filter: blur(4px) brightness(90%);
+}
+
 .container {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
     padding: 0px;
 }
 
-.info-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    color: var(--primary-black);
-    background: var(--lavender-pink);
-    padding: 10px;
-    border-radius: 10px;
-    width: 100%;
-    min-height: 100px;
-}

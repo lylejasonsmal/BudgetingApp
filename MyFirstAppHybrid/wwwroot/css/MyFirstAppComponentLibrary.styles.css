@@ -1,3 +1,9 @@
+/* _content/MyFirstAppComponentLibrary/UI/Components/BudgetFixtureComponent.razor.rz.scp.css */
+.card-body[b-jq0rfqy5h5]{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/CardWrapperComponent.razor.rz.scp.css */
 .card[b-0ger2c1501] {
     display: flex;
@@ -5,8 +11,8 @@
     width: 100%;
     border-radius: 15px;
     padding: 0;
-    background: var(--primary-black);
-    color: var(--creamy-off-white);
+    background: var(--primary-card-background);
+    color: var(--primary-card-foreground);
     overflow: hidden;
     border: 1px solid var(--border-black);
 }
@@ -17,8 +23,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    background: var(--primary-black);
-    color: var(--creamy-off-white);
+    background: var(--primary-card-background);
+    color: var(--primary-card-foreground);
     border-bottom: 1px solid var(--border-black);
 }
 
@@ -39,9 +45,8 @@
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-    height: 5vh;
     border-top: 1px solid var(--border-black);
-    color: var(--lavender-pink);
+    color: var(--primary-font-color);
 }
 
 .shimmer[b-0ger2c1501] {
@@ -77,6 +82,11 @@
     font-family: 'Material Symbols Outlined' !important;
     font-variation-settings: 'FILL' 1, 'wght' 800, 'GRAD' 50, 'opsz' 48;
 }
+
+.icon .material-symbols-outlined[b-mvf7z1p1va] {
+    font-family: 'Material Symbols Outlined' !important;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 50, 'opsz' 48;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/PopupWrapperComponent.razor.rz.scp.css */
 .popup-container[b-dz8qorjlsg] {
     display: flex; 
@@ -92,9 +102,9 @@
 }
 
 .popup[b-dz8qorjlsg] {
-    background: var(--primary-black);
-    width: 80vw;
-    min-height: 50vh;
+    background: var(--primary-popup-background);
+    width: 90vw;
+    min-height: 75vh;
     border: 2px solid var(--border-black);
     border-radius: 15px;
 }
@@ -108,7 +118,7 @@
     min-height: 50px;
     border-bottom: 1px solid var(--border-black);
     padding: 10px;
-    color: var(--creamy-off-white);
+    color: var(--primary-popup-foreground);
 }
 
 .popup-body[b-dz8qorjlsg] {
@@ -137,27 +147,19 @@
     padding: 0px;
 }
 
+.paid-expense[b-933qsapzfe] {
+    filter: blur(4px) brightness(90%);
+}
+
 .container[b-933qsapzfe] {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
     padding: 0px;
 }
 
-.info-card[b-933qsapzfe] {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    color: var(--primary-black);
-    background: var(--lavender-pink);
-    padding: 10px;
-    border-radius: 10px;
-    width: 100%;
-    min-height: 100px;
-}
 /* _content/MyFirstAppComponentLibrary/UI/Components/NavigationBarComponent.razor.rz.scp.css */
 .navigation-bar[b-mhmy4p8bay] {
     display: flex;
@@ -167,8 +169,8 @@
     position: fixed;
     bottom: 0;
     width: 100vw;
-    background: var(--primary-black);
-    height: 90px;
+    background: var(--primary-nav-bar-background);
+    height: 75px;
     overflow: hidden;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
@@ -184,13 +186,13 @@
     aspect-ratio: 1/1;
     border-radius: 100%;
     transition: ease-in-out 0.2s;
-    color: var(--lavender-pink);
+    color: var(--primary-nav-bar-foreground);
 }
 
 .active[b-mhmy4p8bay] {
     color: var(--creamy-off-white) !important;
     background: var(--border-black);
-    border: 5px solid var(--lavender-pink);
+    border: 5px solid var(--primary-button-background);
 }
 
 .navigation-container:hover[b-mhmy4p8bay]{

@@ -1,30 +1,110 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Borel&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans+Narrow:wght@400;700&family=Pacifico&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Twinkle+Star&display=swap');
 * {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font);
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: bolder;
     outline: none;
     margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    font-size-adjust: 0.4;
+}
+
+.caption{
+    font-size: 0.4em;
+    text-align: center;
 }
 
 :root {
     --soft-blush-pink: #F4C7C3;
     --light-bubblegum-pink: #F7A8D0;
     --lavender-pink: #D6A4F0;
+    --lavender-pink-darker: #5A4370;
     --peachy-pink: #FFD5C4;
     --creamy-off-white: #FFF1E6;
     --muted-lilac-pink: #D998D8;
     --primary-black: #282828;
     --secondary-black: #323232;
     --border-black: #484848;
+    --widget-background-top: #3A4257;
+    --widget-background-bottom: #2C3446;
+    --widget-card-background: #0F1628;
+    --widget-accent: #E3B8D6;
+    --widget-text-primary: #FFFFFF;
+    --widget-text-secondary: #A8B0C0;
+    --widget-text-negative: #FF6B6B;
+}
+
+
+.dark-theme {
+    --primary-font-color: var(--widget-accent);
+    --primary-background: var(--primary-black);
+    --primary-button-background: var(--lavender-pink-darker);
+    --primary-button-foreground: var(--widget-accent);
+    --primary-button-border: var(--border-black);
+    --primary-card-background: var(--primary-black);
+    --primary-card-foreground: var(--creamy-off-white);
+    --primary-expense-background: var(--secondary-black);
+    --primary-expense-foreground: var(--widget-accent);
+    --primary-popup-background: var(--primary-black);
+    --primary-popup-foreground: var(--creamy-off-white);
+    --primary-input-color: var(--creamy-off-white);
+    --primary-input-background: var(--secondary-black);
+    --primary-input-focus: var(--widget-accent);
+    --primary-nav-bar-background: var(--primary-black);
+    --primary-nav-bar-foreground: var(--widget-accent);
+}
+
+
+.light-theme {
+    --primary-font-color: var(--primary-black);
+    --primary-background: var(--creamy-off-white);
+    --primary-button-background: var(--soft-blush-pink);
+    --primary-button-foreground: var(--primary-black);
+    --primary-button-border: var(--soft-blush-pink);
+    --primary-card-background: var(--creamy-off-white);
+    --primary-card-foreground: var(--primary-black);
+    --primary-expense-background: var(--soft-blush-pink);
+    --primary-expense-foreground: var(--primary-black);
+    --primary-popup-background: var(--creamy-off-white);
+    --primary-popup-foreground: var(--primary-black);
+    --primary-input-color: var(--primary-black);
+    --primary-input-background: var(--creamy-off-white);
+    --primary-input-focus: var(--muted-lilac-pink);
+    --primary-nav-bar-background: var(--creamy-off-white);
+    --primary-nav-bar-foreground: var(--primary-black);
+}
+
+
+.default-font {
+    --font: 'Poppins', sans-serif;
+    --base-font-size: 0.75em;
+}
+
+.secondary-font {
+    --font: "Borel", cursive;
+    --base-font-size: 1em;
+}
+
+.tertiary-font {
+    --font: "Pacifico", cursive;
+    --base-font-size: 1em;
+}
+
+.quaternary-font {
+    --font: "Twinkle Star", cursive;
+    --base-font-size: 1em;
 }
 
 body {
-    background: var(--primary-black);
-    color: var(--lavender-pink);
+    background: var(--primary-background);
+    color: var(--primary-font-color);
+    font-size: var(--base-font-size);
 }
 
 .page {
@@ -37,7 +117,7 @@ body {
     width: 100vw;
     overflow-y: scroll;
     margin: 0px;
-    margin-bottom: 10vh;
+    margin-bottom: 35px;
 }
 
 a {
@@ -51,20 +131,20 @@ input {
     min-height: 30px;
     padding: 10px;
     width: 100%;
-    background: var(--secondary-black);
+    background: var(--primary-input-background);
     outline: none;
     box-shadow: none;
-    caret-color: var(--lavender-pink);
-    color: var(--creamy-off-white);
+    caret-color: var(--primary-input-color);
+    color: var(--primary-input-color);
     font-weight: 500;
 }
 
-input:focus {
-    border: 1px solid var(--lavender-pink);
-    outline: none;
-    box-shadow: none;
-    color: var(--lavender-pink);
-}
+    input:focus {
+        border: 1px solid var(--primary-input-focus);
+        outline: none;
+        box-shadow: none;
+        color: var(--primary-input-focus);
+    }
 
 textarea {
     border: 1px solid var(--border-black);
@@ -72,19 +152,100 @@ textarea {
     min-height: 80px;
     padding: 10px;
     width: 100%;
-    background: var(--secondary-black);
+    background: var(--primary-input-background);
     outline: none;
     box-shadow: none;
-    caret-color: var(--lavender-pink);
-    color: var(--creamy-off-white);
+    caret-color: var(--primary-input-color);
+    color: var(--primary-input-color);
     font-weight: 500;
     resize: vertical;
     font-family: inherit;
 }
 
-textarea:focus {
-    border: 1px solid var(--lavender-pink);
-    outline: none;
-    box-shadow: none;
-    color: var(--lavender-pink);
+    textarea:focus {
+        border: 1px solid var(--primary-input-focus);
+        outline: none;
+        box-shadow: none;
+        color: var(--primary-input-focus);
+    }
+
+button{
+    all: unset;
+    border: 1px solid var(--primary-button-border);
+    background: var(--primary-button-background);
+    padding: 10px;
+    color: var(--primary-button-foreground);
+    font-weight: bolder;
+    border-radius: 10px;
+    min-width: 75px;
+    text-align: center;
+    margin: 5px;
+}
+
+.dark-theme .secondary-button {
+    border: 1px solid var(--primary-button-background);
+    background: transparent;
+    color: var(--primary-button-foreground);
+}
+
+.light-theme .secondary-button {
+    border: 1px solid var(--primary-button-background);
+    background: transparent;
+    color: var(--primary-button-foreground);
+}
+
+
+.info-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary-expense-foreground);
+    background: var(--primary-expense-background);
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    flex: 1;
+    gap: 10px;
+}
+
+.icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    padding: 10px;
+    background: var(--primary-expense-foreground);
+    color: var(--primary-expense-background);
+    margin: 5px;
+}
+
+.error{
+    background: crimson;
+    color: var(--primary-font-color);
+}
+
+.experimental .info-card {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    color: var(--primary-expense-foreground);
+    background: linear-gradient( 145deg, rgba(214, 164, 240, 0.18), rgba(42, 42, 47, 0.6) );
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 16px;
+    border-radius: 20px;
+    width: 100%;
+    flex: 1;
+    min-height: 100px;
+    gap: 10px;
+    border: 1px solid rgba(214, 164, 240, 0.25);
+    box-shadow: 0 0 30px rgba(214, 164, 240, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
 }

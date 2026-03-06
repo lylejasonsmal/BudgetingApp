@@ -3,7 +3,7 @@ using MyFirstApp.Services.Implementations.PublisherService;
 using MyFirstApp.Services.Interfaces;
 using MyFirstApp.Services.Repositories;
 
-namespace MyFirstApp.Services.Implementations.BudgetFixtureService
+namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
 {
     public class MonthlyBudgetFixtureService : PublisherService<MonthlyBudgetFixtureModel>, IMonthlyBudgetFixtureService
     {
