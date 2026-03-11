@@ -25,6 +25,7 @@ namespace MyFirstAppHybrid
             builder.Services.AddSingleton<SqliteDatabaseService>();
             builder.Services.AddSingleton<MonthlyBudgetFixtureRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();
+            builder.Services.AddSingleton<UserRepository>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

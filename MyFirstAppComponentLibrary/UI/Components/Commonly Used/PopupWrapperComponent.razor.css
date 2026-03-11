@@ -13,10 +13,20 @@
 
 .popup {
     background: var(--primary-popup-background);
-    width: 90vw;
-    min-height: 75vh;
-    border: 2px solid var(--border-black);
-    border-radius: 15px;
+    width: 100vw;
+    min-height: 100vh;
+    border: 1px solid var(--border-black);
+    animation: popupSlideIn 0.35s ease;
+}
+
+@keyframes popupSlideIn {
+    from {
+        transform: translateY(50vh);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 .popup-header {
@@ -26,7 +36,6 @@
     align-items: center;
     width: 100%;
     min-height: 50px;
-    border-bottom: 1px solid var(--border-black);
     padding: 10px;
     color: var(--primary-popup-foreground);
 }
@@ -34,8 +43,9 @@
 .popup-body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
+    height: 100%;
     padding: 10px;
 }

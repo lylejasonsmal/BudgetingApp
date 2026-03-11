@@ -12,6 +12,7 @@
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     border-top: 1px solid var(--border-black);
+    z-index: 1000;
 }
 
 .navigation-container {

@@ -1,9 +1,10 @@
-﻿@inject MonthlyBudgetFixtureRepository MonthlyBudgetFixtureRepository
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject ExpenseRepository ExpenseRepository
 
 @if (_budgetFixture is not null)
 {
-    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="gesture">
+    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="calendar_month" Link="/statistics-dashboard">
         <div class="card-body">
             <div class="info-card">
                 <p>Net Salary</p>
@@ -31,6 +32,22 @@
                 <MaterialDesignIconComponent IconName="analytics" />
                 <p>This is where insights about your monthly budget will go.</p>
             </div>
+
+            <div class="info-card">
+                <MaterialDesignIconComponent IconName="paid" />
+                <p>
+                    <strong>@_paidExpenseCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are paid for.
+                    <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_paidExpenseCount"/>
+                </p>
+            </div>
+            
+            <div class="info-card">
+                <MaterialDesignIconComponent IconName="trending_down" />
+                <p>
+                    <strong>@_overBudgetCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are overbudget.
+                    <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_overBudgetCount" IsDanger="true"/>
+                </p>
+            </div>
         </div>
     </CardWrapperComponent>
 }
@@ -43,12 +60,16 @@ else
 @code {
     [Parameter] public required int Id { get; set; }
     private MonthlyBudgetFixtureModel? _budgetFixture;
+    private int _paidExpenseCount;
+    private int _overBudgetCount;
 
     protected override async Task OnParametersSetAsync()
     {
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
-            _budgetFixture = await MonthlyBudgetFixtureRepository.GetByIdAsync(Id);
+            _budgetFixture = model;
+            _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(Id);
+            _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(Id);
             await InvokeAsync(StateHasChanged);
         });
      }

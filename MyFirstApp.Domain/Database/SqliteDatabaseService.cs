@@ -6,31 +6,32 @@ namespace MyFirstApp.Domain.Database;
 
 public class SqliteDatabaseService
 {
-    private SQLiteAsyncConnection? _db;
+    private SQLiteAsyncConnection? _dbConnection;
 
     public SqliteDatabaseService() { }
 
     public async Task<SQLiteAsyncConnection> GetConnectionAsync()
     {
-        if (_db != null)
+        if (_dbConnection != null)
         {
-            return _db;
+            await _dbConnection.CloseAsync();
         }
 
         string path = Path.Combine(FileSystem.AppDataDirectory, "budgetApp.sqlite");
-        _db = new SQLiteAsyncConnection(path);
+        _dbConnection = new SQLiteAsyncConnection(path);
 
-        await _db.CreateTableAsync<MonthlyBudgetFixtureModel>();
-        await _db.CreateTableAsync<ExpenseModel>();
+        await _dbConnection.CreateTableAsync<MonthlyBudgetFixtureModel>();
+        await _dbConnection.CreateTableAsync<ExpenseModel>();
+        await _dbConnection.CreateTableAsync<UserModel>();
 
-        await SeedDatabaseAsync(_db);
+        await SeedDatabaseAsync(_dbConnection);
 
-        return _db;
+        return _dbConnection;
     }
 
-    private async Task SeedDatabaseAsync(SQLiteAsyncConnection db)
+    private async Task SeedDatabaseAsync(SQLiteAsyncConnection dbConnection)
     {
-        var existingFixture = await db.Table<MonthlyBudgetFixtureModel>()
+        var existingFixture = await dbConnection.Table<MonthlyBudgetFixtureModel>()
                                       .Where(f => f.Month == "January" && f.Year == "2026")
                                       .FirstOrDefaultAsync();
 
@@ -49,14 +50,14 @@ public class SqliteDatabaseService
                 CurrentlyInUse = true
             };
 
-            fixtureId = await db.InsertAsync(fixture);
+            fixtureId = await dbConnection.InsertAsync(fixture);
         }
         else
         {
             fixtureId = existingFixture.Id;
         }
 
-        var existingExpenses = await db.Table<ExpenseModel>()
+        var existingExpenses = await dbConnection.Table<ExpenseModel>()
                                        .Where(e => e.MonthlyBudgetFixtureId == fixtureId)
                                        .ToListAsync();
 
@@ -71,7 +72,17 @@ public class SqliteDatabaseService
                 new ExpenseModel { ExpenseName = "Entertainment", BudgetedForAmount = 800, ActualAmount = 600, IsPaidFor = false, IsARecurringExpense = false, MonthlyBudgetFixtureId = fixtureId }
             };
 
-            await db.InsertAllAsync(expenses);
+            await dbConnection.InsertAllAsync(expenses);
+        }
+
+        var existingUsers = await dbConnection.Table<UserModel>()
+            .ToListAsync();
+
+        if (existingUsers.Count == 0)
+        {
+            var user = new UserModel { Birthday = new DateTime(2004, 01, 26), Email = "lylesmal@gmail.com", FirstName = "Lyle", LastName = "Smal", Username = "lylejasonsmal", ProfileImage = null, Description = "I'm a software developer!"};
+
+            await dbConnection.InsertAsync(user);
         }
     }
 }

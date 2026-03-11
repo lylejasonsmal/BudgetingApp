@@ -14,10 +14,12 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     font-size-adjust: 0.4;
 }
+p{
+    margin: 0;
+}
 
 .caption{
     font-size: 0.4em;
-    text-align: center;
 }
 
 :root {
@@ -88,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .secondary-font {
     --font: "Borel", cursive;
-    --base-font-size: 1em;
+    --base-font-size: 0.75em;
 }
 
 .tertiary-font {
@@ -110,15 +112,17 @@ body {
 .page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 1vh;
     padding: 10px;
     width: 100vw;
+    min-height: 100vh;
     overflow-y: scroll;
     margin: 0px;
     margin-bottom: 35px;
 }
+
 
 a {
     color: var(--primary-black);
@@ -130,6 +134,7 @@ input {
     border-radius: 25px;
     min-height: 30px;
     padding: 10px;
+    min-width: 300px;
     width: 100%;
     background: var(--primary-input-background);
     outline: none;
@@ -139,18 +144,19 @@ input {
     font-weight: 500;
 }
 
-    input:focus {
-        border: 1px solid var(--primary-input-focus);
-        outline: none;
-        box-shadow: none;
-        color: var(--primary-input-focus);
-    }
+input:focus {
+    border: 1px solid var(--primary-input-focus);
+    outline: none;
+    box-shadow: none;
+    color: var(--primary-input-focus);
+}
 
 textarea {
     border: 1px solid var(--border-black);
     border-radius: 25px;
     min-height: 80px;
     padding: 10px;
+    min-width: 300px;
     width: 100%;
     background: var(--primary-input-background);
     outline: none;
@@ -162,12 +168,12 @@ textarea {
     font-family: inherit;
 }
 
-    textarea:focus {
-        border: 1px solid var(--primary-input-focus);
-        outline: none;
-        box-shadow: none;
-        color: var(--primary-input-focus);
-    }
+textarea:focus {
+    border: 1px solid var(--primary-input-focus);
+    outline: none;
+    box-shadow: none;
+    color: var(--primary-input-focus);
+}
 
 button{
     all: unset;
@@ -176,10 +182,34 @@ button{
     padding: 10px;
     color: var(--primary-button-foreground);
     font-weight: bolder;
-    border-radius: 10px;
+    border-radius: 100px;
     min-width: 75px;
     text-align: center;
     margin: 5px;
+}
+
+.floating-button {
+    min-width: 35px;
+    aspect-ratio: 1/1 !important;
+    border-radius: 100%;
+    position: fixed;
+    right: 5px;
+    bottom: 80px;
+    z-index: 500;
+    color: var(--creamy-off-white) !important;
+    background: var(--border-black);
+    border: 2px solid var(--primary-button-background);
+    animation: hover-up ease-in-out 0.2s;
+}
+
+@keyframes hover-up {
+    0% {
+        bottom: 0px;
+    }
+
+    100% {
+        bottom: 80px;
+    }
 }
 
 .dark-theme .secondary-button {
@@ -224,9 +254,9 @@ button{
     margin: 5px;
 }
 
-.error{
+.error {
     background: crimson;
-    color: var(--primary-font-color);
+    color: var(--creamy-off-white);
 }
 
 .experimental .info-card {

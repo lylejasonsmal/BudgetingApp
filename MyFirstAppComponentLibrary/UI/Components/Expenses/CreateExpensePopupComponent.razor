@@ -1,0 +1,101 @@
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@inject MonthlyBudgetFixtureRepository MonthlyBudgetFixtureRepository
+@inject IExpenseService ExpenseService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Create Expense">
+    <div class="body">
+
+        @if (_error is not null)
+        {
+            <div class="info-card error">
+                <h4>Error</h4>
+                <p>@_error</p>
+            </div>
+        }
+
+        <div>
+            <h6>Expense Name</h6>
+            <input placeholder="Expense Name" @bind="_expenseName"/>
+        </div>
+
+        <div>
+            <h6>Budgeted For Amount</h6>
+            <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
+        </div>
+
+        <div>
+            <h6>Actual Amount</h6>
+            <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
+        </div>
+
+        <div>
+            <h6>Notes</h6>
+            <textarea placeholder="Notes" @bind="_notes"></textarea>
+        </div>
+    </div>
+
+    <div class="popup-actions">
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button @onclick="CreateAsync">Create</button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+
+    private string? _expenseName;
+    private double? _budgetedForAmount;
+    private double? _actualAmount;
+    private string? _notes;
+
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _error = null;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CancelAsync()
+    {
+        _error = null;
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task CreateAsync()
+    {
+        var currentBudgetFixtureId = await MonthlyBudgetFixtureRepository.GetCurrentFixtureIdAsync();
+        if (currentBudgetFixtureId is null)
+        {
+            _error = "A problem occured.";
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        ExpenseModel expense = new ExpenseModel
+        {
+            ExpenseName = _expenseName,
+            BudgetedForAmount = _budgetedForAmount,
+            ActualAmount = _actualAmount,
+            Notes = _notes,
+            IsPaidFor = false,
+            IsARecurringExpense = false,
+            MonthlyBudgetFixtureId = currentBudgetFixtureId.Value
+        };
+
+
+        var result = await ExpenseService.CreateExpenseAsync(expense);
+
+        if (result.Successful)
+        {
+            _error = null;
+            await VisibleChanged.InvokeAsync(false);
+        }
+        else if (result.Unsuccessful)
+        {
+            _error = result.Error;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

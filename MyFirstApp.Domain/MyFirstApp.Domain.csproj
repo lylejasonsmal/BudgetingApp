@@ -13,9 +13,5 @@
     <!-- Needed for FileSystem.AppDataDirectory -->
     <PackageReference Include="Microsoft.Maui.Essentials" Version="9.0.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Values\" />
-  </ItemGroup>
 </Project>
 	

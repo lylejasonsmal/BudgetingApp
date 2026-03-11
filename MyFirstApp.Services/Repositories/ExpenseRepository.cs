@@ -54,6 +54,27 @@ namespace MyFirstApp.Services.Repositories
             return await _db.FindAsync<ExpenseModel>(id);
         }
 
+        public async Task<int> GetPaidExpenseCount(int? budgetFixtureId)
+        {
+            _db ??= await _dbService.GetConnectionAsync();
+            var paidExpenses = await _db.Table<ExpenseModel>()
+                .Where(x => x.MonthlyBudgetFixtureId == budgetFixtureId)
+                .Where(x=>x.IsPaidFor)
+                .ToListAsync();
+
+            return paidExpenses.Count;
+        }
+
+        public async Task<int> GetOverBudgetExpenseCount(int? budgetFixtureId)
+        {
+            _db ??= await _dbService.GetConnectionAsync();
+            var overBudgetExpenses = await _db.Table<ExpenseModel>()
+                .Where(x => x.MonthlyBudgetFixtureId == budgetFixtureId)
+                .Where(x => x.ActualAmount > x.BudgetedForAmount)
+                .ToListAsync();
+
+            return overBudgetExpenses.Count;
+        }
         public async Task AddAsync(ExpenseModel expense)
         {
             _db ??= await _dbService.GetConnectionAsync();
