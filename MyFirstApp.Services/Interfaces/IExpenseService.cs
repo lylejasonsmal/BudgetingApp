@@ -1,4 +1,5 @@
 ﻿using MyFirstApp.Domain.Models;
+using MyFirstApp.Domain.Values;
 using MyFirstApp.Services.Interfaces.PublisherService;
 
 namespace MyFirstApp.Services.Interfaces
@@ -6,6 +7,7 @@ namespace MyFirstApp.Services.Interfaces
     public interface IExpenseService : IPublisher<ExpenseModel>
     {
         Task SubscribeAsync(Func<ExpenseModel, Task> handler);
-        Task UpdateExpenseAsync(ExpenseModel expenseModel);
+        Task<Result> UpdateExpenseAsync(ExpenseModel expenseModel);
+        Task<Result> CreateExpenseAsync(ExpenseModel expenseModel);
     }
 }

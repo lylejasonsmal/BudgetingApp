@@ -1,33 +1,42 @@
-﻿@inject ExpenseRepository ExpenseRepository
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@inject ExpenseRepository ExpenseRepository
 @inject IExpenseService ExpenseService
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Expense">
     <div class="body">
+
+        @if (_error is not null)
+        {
+            <div class="info-card error">
+                <h4>Error</h4>
+                <p>@_error</p>
+            </div>
+        }
+
         <div>
             <h6>Expense Name</h6>
             <input placeholder="Expense Name" @bind="_expenseName"/>
         </div>
-        
+
         <div>
             <h6>Budgeted For Amount</h6>
             <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
         </div>
-        
+
         <div>
             <h6>Actual Amount</h6>
             <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
         </div>
-        
+
         <div>
             <h6>Notes</h6>
             <textarea placeholder="Notes" @bind="_notes"></textarea>
         </div>
-
     </div>
 
     <div class="popup-actions">
-        <button class="secondary-button" @onclick="Cancel">Cancel</button>
-        <button @onclick="Save">Save</button>
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button @onclick="SaveAsync">Save</button>
     </div>
 </PopupWrapperComponent>
 
@@ -43,6 +52,8 @@
     private double? _actualAmount;
     private string? _notes;
 
+    private string? _error;
+
     protected override async Task OnParametersSetAsync()
     {
         _expense = await ExpenseRepository.GetByIdAsync(Id);
@@ -55,25 +66,37 @@
             _notes = _expense.Notes;
         }
 
+        _error = null;
+
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task Cancel()
+    private async Task CancelAsync()
     {
+        _error = null;
         await VisibleChanged.InvokeAsync(false);
     }
 
-    private async Task Save()
+    private async Task SaveAsync()
     {
-        if (_expense is not null)
-        {
-            _expense.ExpenseName = _expenseName;
-            _expense.BudgetedForAmount = _budgetedForAmount;
-            _expense.ActualAmount = _actualAmount;
-            _expense.Notes = _notes;
-            await ExpenseService.UpdateExpenseAsync(_expense);
-        }
+        if (_expense is null) return;
 
-        await VisibleChanged.InvokeAsync(false);
+        _expense.ExpenseName = _expenseName;
+        _expense.BudgetedForAmount = _budgetedForAmount;
+        _expense.ActualAmount = _actualAmount;
+        _expense.Notes = _notes;
+
+        var result = await ExpenseService.UpdateExpenseAsync(_expense);
+
+        if (result.Successful)
+        {
+            _error = null;
+            await VisibleChanged.InvokeAsync(false);
+        }
+        else if (result.Unsuccessful)
+        {
+            _error = result.Error;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

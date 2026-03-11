@@ -1,4 +1,5 @@
-﻿@inject NavigationManager navigationManager
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@inject NavigationManager NavigationManager
 
 <div id="navigation-bar" class="navigation-bar">
 
@@ -25,7 +26,7 @@
 @code {
     protected override void OnInitialized()
     {
-        navigationManager.LocationChanged += HandleLocationChanged;
+        NavigationManager.LocationChanged += HandleLocationChanged;
     }
 
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -35,27 +36,27 @@
 
     private void GoToThread()
     {
-        navigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/");
     }
 
     private void GoToStats()
     {
-        navigationManager.NavigateTo("/statistics-dashboard");
+        NavigationManager.NavigateTo("/statistics-dashboard");
     }
 
     private void GoToProfile()
     {
-        navigationManager.NavigateTo("/profile");
+        NavigationManager.NavigateTo("/profile");
     }
 
     private bool IsActive(string route)
     {
-        var relativePath = "/" + navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        var relativePath = "/" + NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         return relativePath == route;
     }
 
     public void Dispose()
     {
-        navigationManager.LocationChanged -= HandleLocationChanged;
+        NavigationManager.LocationChanged -= HandleLocationChanged;
     }
 }

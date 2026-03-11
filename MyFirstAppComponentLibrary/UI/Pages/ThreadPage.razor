@@ -8,6 +8,11 @@
     {
         <BudgetFixtureComponent Id="@_currentBudgetFixtureId.Value"/>
     }
+    
+
+    <button class="floating-button" @onclick="OpenPopupAsync">
+        <MaterialDesignIconComponent IconName="add" />
+    </button>
 
     @if (_expenseIds is not null)
     {
@@ -19,12 +24,15 @@
             <ExpenseComponent Id="@expenseId"/>
         }
     }
+
+    <CreateExpensePopupComponent @bind-Visible="_showPopup"/>
 </div>
 
 @code
 {
     private IReadOnlyList<int>? _expenseIds;
     private int? _currentBudgetFixtureId;
+    private bool _showPopup;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -41,5 +49,10 @@
 
             await InvokeAsync(StateHasChanged);
         });
+    }
+
+    private void OpenPopupAsync()
+    {
+        _showPopup = true;
     }
 }

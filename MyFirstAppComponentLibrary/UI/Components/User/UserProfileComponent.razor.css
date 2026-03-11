@@ -1,0 +1,11 @@
+.image-placeholder{
+    aspect-ratio: 1/1;
+    width: 75px;
+    background: var(--primary-expense-background);
+    color: var(--primary-button-foreground);
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

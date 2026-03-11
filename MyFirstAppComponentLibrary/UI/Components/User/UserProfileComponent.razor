@@ -1,0 +1,49 @@
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@inject UserRepository UserRepository
+
+<CardWrapperComponent HeaderText="Your Profile" IconName="person">
+    @if (_user is not null)
+    {
+        if (_user.ProfileImage is null)
+        {
+            <div class="image-placeholder">
+                <MaterialDesignIconComponent IconName="person"/>
+            </div>
+        }
+
+            <p>
+                <h4>
+                    <MaterialDesignIconComponent IconName="alternate_email" />
+                    @_user.Username
+                </h4>
+                @_user.FirstName @_user.LastName
+            </p>
+
+        <div class="info-card">
+            <p>
+                <h5>Birthday</h5>
+                @_user.Birthday.Value.ToString("M")
+            </p>
+        </div>
+
+        <div class="info-card">
+            <p>
+                <h5>Who Are You?</h5>
+                @_user.Description
+            </p>
+        </div>
+    }
+</CardWrapperComponent>
+
+@code {
+    private UserModel? _user;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender) return;
+
+        _user = await UserRepository.GetByIdAsync(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

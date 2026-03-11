@@ -1,9 +1,3 @@
-/* _content/MyFirstAppComponentLibrary/UI/Components/BudgetFixtureComponent.razor.rz.scp.css */
-.card-body[b-jq0rfqy5h5]{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/CardWrapperComponent.razor.rz.scp.css */
 .card[b-0ger2c1501] {
     display: flex;
@@ -25,12 +19,17 @@
     width: 100%;
     background: var(--primary-card-background);
     color: var(--primary-card-foreground);
-    border-bottom: 1px solid var(--border-black);
+    border-bottom: none;
 }
 
-.icon-button[b-0ger2c1501]{
+.icon-button[b-0ger2c1501] {
     height: 100%;
     aspect-ratio: 1/1;
+    border: 2px solid var(--primary-button-border);
+    background: var(--primary-button-background);
+    padding: 10px;
+    color: var(--primary-button-foreground);
+    border-radius: 100px;
 }
 
 .card-body[b-0ger2c1501] {
@@ -47,6 +46,7 @@
     width: 100%;
     border-top: 1px solid var(--border-black);
     color: var(--primary-font-color);
+    padding: 7.5px;
 }
 
 .shimmer[b-0ger2c1501] {
@@ -103,10 +103,20 @@
 
 .popup[b-dz8qorjlsg] {
     background: var(--primary-popup-background);
-    width: 90vw;
-    min-height: 75vh;
-    border: 2px solid var(--border-black);
-    border-radius: 15px;
+    width: 100vw;
+    min-height: 100vh;
+    border: 1px solid var(--border-black);
+    animation: popupSlideIn-b-dz8qorjlsg 0.35s ease;
+}
+
+@keyframes popupSlideIn-b-dz8qorjlsg {
+    from {
+        transform: translateY(50vh);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 .popup-header[b-dz8qorjlsg] {
@@ -116,7 +126,6 @@
     align-items: center;
     width: 100%;
     min-height: 50px;
-    border-bottom: 1px solid var(--border-black);
     padding: 10px;
     color: var(--primary-popup-foreground);
 }
@@ -124,21 +133,52 @@
 .popup-body[b-dz8qorjlsg] {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
+    height: 100%;
     padding: 10px;
 }
-/* _content/MyFirstAppComponentLibrary/UI/Components/EditExpensePopupComponent.razor.rz.scp.css */
-.body[b-62vizmllzq]{
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/ProgressBarComponent.razor.rz.scp.css */
+.progress-container[b-133hntvjuu] {
+    width: 100%;
+    height: 6px;
+    background-color: var(--primary-background);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.progress-bar[b-133hntvjuu] {
+    height: 100%;
+    background-color: lightgreen;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.danger[b-133hntvjuu] {
+    background-color: crimson;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/CreateExpensePopupComponent.razor.rz.scp.css */
+.body[b-5djio24tw3] {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 25px;
+    min-height: 50%;
 }
-/* _content/MyFirstAppComponentLibrary/UI/Components/ExpenseComponent.razor.rz.scp.css */
-.main-body[b-933qsapzfe] {
+/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/EditExpensePopupComponent.razor.rz.scp.css */
+.body[b-q384oxpmli] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    min-height: 50%;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpenseComponent.razor.rz.scp.css */
+.main-body[b-ohjxmp6wew] {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -147,11 +187,11 @@
     padding: 0px;
 }
 
-.paid-expense[b-933qsapzfe] {
+.paid-expense[b-ohjxmp6wew] {
     filter: blur(4px) brightness(90%);
 }
 
-.container[b-933qsapzfe] {
+.container[b-ohjxmp6wew] {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -160,6 +200,12 @@
     padding: 0px;
 }
 
+/* _content/MyFirstAppComponentLibrary/UI/Components/MonthlyBudgetFixture/BudgetFixtureComponent.razor.rz.scp.css */
+.card-body[b-yx3hia3rd7]{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/NavigationBarComponent.razor.rz.scp.css */
 .navigation-bar[b-mhmy4p8bay] {
     display: flex;
@@ -175,6 +221,7 @@
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     border-top: 1px solid var(--border-black);
+    z-index: 1000;
 }
 
 .navigation-container[b-mhmy4p8bay] {
@@ -197,4 +244,16 @@
 
 .navigation-container:hover[b-mhmy4p8bay]{
     opacity: 75%;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/User/UserProfileComponent.razor.rz.scp.css */
+.image-placeholder[b-6crowhzq3g]{
+    aspect-ratio: 1/1;
+    width: 75px;
+    background: var(--primary-expense-background);
+    color: var(--primary-button-foreground);
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

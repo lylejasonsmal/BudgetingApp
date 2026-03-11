@@ -18,12 +18,17 @@
     width: 100%;
     background: var(--primary-card-background);
     color: var(--primary-card-foreground);
-    border-bottom: 1px solid var(--border-black);
+    border-bottom: none;
 }
 
-.icon-button{
+.icon-button {
     height: 100%;
     aspect-ratio: 1/1;
+    border: 2px solid var(--primary-button-border);
+    background: var(--primary-button-background);
+    padding: 10px;
+    color: var(--primary-button-foreground);
+    border-radius: 100px;
 }
 
 .card-body {
@@ -40,6 +45,7 @@
     width: 100%;
     border-top: 1px solid var(--border-black);
     color: var(--primary-font-color);
+    padding: 7.5px;
 }
 
 .shimmer {
