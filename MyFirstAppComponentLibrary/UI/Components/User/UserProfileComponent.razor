@@ -11,22 +11,22 @@
             </div>
         }
 
-            <p>
-                <h4>
-                    <MaterialDesignIconComponent IconName="alternate_email" />
-                    @_user.Username
-                </h4>
-                @_user.FirstName @_user.LastName
-            </p>
+        <div class="card-body">
+            <h4>
+                <MaterialDesignIconComponent IconName="alternate_email" />
+                @_user.Username
+            </h4>
+            @_user.FirstName @_user.LastName
+        </div>
 
-        <div class="info-card">
+        <div class="card-body">
             <p>
                 <h5>Birthday</h5>
                 @_user.Birthday.Value.ToString("M")
             </p>
         </div>
 
-        <div class="info-card">
+        <div class="card-body">
             <p>
                 <h5>Who Are You?</h5>
                 @_user.Description

@@ -26,36 +26,51 @@ namespace MyFirstApp.Services.Implementations.ExpenseService
 
         public async Task<Result> UpdateExpenseAsync(ExpenseModel expenseModel)
         {
-            var originalExpense = await _expenseRepository.GetByIdAsync(expenseModel.Id);
-
-            await _expenseRepository.UpdateAsync(expenseModel);
-            var result = await _monthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
-
-            if (result.Unsuccessful)
+            var resultBuilder = Result.Builder();
+            var isValid = true;
+            if (expenseModel.TryValidate(out var error) is false)
             {
-                await _expenseRepository.UpdateAsync(originalExpense!);
-                return new Result(ResultOutcome.Failure, result.Error);
+                resultBuilder.WithError(error);
+                isValid = false;
             }
 
-            await Publish(expenseModel);
-            return new Result(ResultOutcome.Success);
+            var success = await _monthlyBudgetFixtureService.CalculateIfExpensesAreWithinBudgetAsync(expenseModel, resultBuilder);
+
+            if (success && isValid)
+            {
+                await _expenseRepository.UpdateAsync(expenseModel);
+                await _monthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
+                await PublishAsync(expenseModel);
+            }
+
+            return resultBuilder.Create();
         }
 
         public async Task<Result> CreateExpenseAsync(ExpenseModel expenseModel)
         {
-            await _expenseRepository.AddAsync(expenseModel);
-            var result = await _monthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
-
-            if (result.Unsuccessful)
+            var resultBuilder = Result.Builder();
+            var isValid = true;
+            if (expenseModel.TryValidate(out var error) is false)
             {
-                var originalExpense = await _expenseRepository.GetByIdAsync(expenseModel.Id);
-                await _expenseRepository.DeleteAsync(originalExpense!);
-                return new Result(ResultOutcome.Failure, result.Error);
+                resultBuilder.WithError(error);
+                isValid = false;
+            }
+            var success = await _monthlyBudgetFixtureService.CalculateIfExpensesAreWithinBudgetAsync(expenseModel, resultBuilder);
+
+            if (success && isValid)
+            {
+                await _expenseRepository.AddAsync(expenseModel);
+                await _monthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
+                await PublishAsync(expenseModel);
             }
 
-            await Publish(expenseModel);
-            return new Result(ResultOutcome.Success);
+            return resultBuilder.Create();
         }
 
+        public async Task DeleteExpenseAsync(ExpenseModel expenseModel)
+        {
+            await _expenseRepository.DeleteAsync(expenseModel);
+            await _monthlyBudgetFixtureService.RecalculateAndUpdateBudgetFixtureAsync();
+        }
     }
 }

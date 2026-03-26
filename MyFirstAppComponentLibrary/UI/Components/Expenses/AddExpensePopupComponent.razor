@@ -1,15 +1,16 @@
 ﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject MonthlyBudgetFixtureRepository MonthlyBudgetFixtureRepository
 @inject IExpenseService ExpenseService
+@inject IToastService ToastService
 
-<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Create Expense">
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Add Expense">
     <div class="body">
-
-        @if (_error is not null)
+        
+        @foreach (var error in _errors)
         {
-            <div class="info-card error">
+            <div class="info-card error error-message">
                 <h4>Error</h4>
-                <p>@_error</p>
+                <p>@error</p>
             </div>
         }
 
@@ -49,17 +50,17 @@
     private double? _actualAmount;
     private string? _notes;
 
-    private string? _error;
+    private IList<string> _errors = [];
 
     protected override async Task OnParametersSetAsync()
     {
-        _error = null;
+        _errors = [];
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task CancelAsync()
     {
-        _error = null;
+        _errors = [];
         await VisibleChanged.InvokeAsync(false);
     }
 
@@ -68,7 +69,7 @@
         var currentBudgetFixtureId = await MonthlyBudgetFixtureRepository.GetCurrentFixtureIdAsync();
         if (currentBudgetFixtureId is null)
         {
-            _error = "A problem occured.";
+            _errors.Add("A problem occured");
             await InvokeAsync(StateHasChanged);
             return;
         }
@@ -89,12 +90,18 @@
 
         if (result.Successful)
         {
-            _error = null;
+            _errors = [];
             await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync($"Successfully added a new expense '{expense.ExpenseName}'!");
+
+            _expenseName = null;
+            _budgetedForAmount = null;
+            _actualAmount = null;
+            _notes = null;
         }
-        else if (result.Unsuccessful)
+        else if (result.Unsuccessful && result.Errors is not null)
         {
-            _error = result.Error;
+            _errors = result.Errors;
             await InvokeAsync(StateHasChanged);
         }
     }

@@ -23,10 +23,50 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
 
             var currentFixture = await GetCurrentFixtureAsync();
 
-            await Publish(currentFixture);
+            await PublishAsync(currentFixture);
         }
 
-        public async Task<Result> RecalculateAndUpdateBudgetFixtureAsync()
+        public async Task<bool> CalculateIfExpensesAreWithinBudgetAsync(ExpenseModel expenseModel, ResultBuilder? resultBuilder)
+        {
+            var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
+
+            currentMonthlyBudgetFixture.BudgetedForAmount = 0;
+            currentMonthlyBudgetFixture.LeftOverAmount = currentMonthlyBudgetFixture.StoredNetSalary;
+            currentMonthlyBudgetFixture.NumberOfExpenses = 0;
+
+            var expenses = await _expenseRepository.GetExpensesByFixtureIdAsync(currentMonthlyBudgetFixture.Id);
+
+            var existingMatchingExpense = expenses.FirstOrDefault(x=>x.Id == expenseModel.Id);
+
+            if (existingMatchingExpense is not null)
+            {
+                expenses.Remove(existingMatchingExpense);
+            }
+
+            foreach (var expense in expenses)
+            {
+                currentMonthlyBudgetFixture.BudgetedForAmount += expense.BudgetedForAmount;
+                currentMonthlyBudgetFixture.LeftOverAmount -= expense.ActualAmount;
+                currentMonthlyBudgetFixture.NumberOfExpenses += 1;
+            }
+
+            currentMonthlyBudgetFixture.BudgetedForAmount += expenseModel.BudgetedForAmount;
+            currentMonthlyBudgetFixture.LeftOverAmount -= expenseModel.ActualAmount;
+            currentMonthlyBudgetFixture.NumberOfExpenses += 1;
+
+            if (currentMonthlyBudgetFixture.BudgetedForAmount > currentMonthlyBudgetFixture.StoredNetSalary)
+            {
+                resultBuilder?.WithError(
+                    $"Your total budgeted for amount (R{currentMonthlyBudgetFixture.BudgetedForAmount}) is greater than your net salary (R{currentMonthlyBudgetFixture.StoredNetSalary}). Please correct either before proceeding.");
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+        public async Task RecalculateAndUpdateBudgetFixtureAsync()
         {
             var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
 
@@ -42,15 +82,9 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
                 currentMonthlyBudgetFixture.NumberOfExpenses += 1;
             }
 
-            if (currentMonthlyBudgetFixture.BudgetedForAmount > currentMonthlyBudgetFixture.StoredNetSalary)
-            {
-                return new Result(ResultOutcome.Failure, $"Your total budgeted for amount (R{currentMonthlyBudgetFixture.BudgetedForAmount}) is greater than your net salary (R{currentMonthlyBudgetFixture.StoredNetSalary}). Please correct either before proceeding.");
-            }
-
             var updatedBudgetFixture = await _monthlyBudgetFixtureRepository.UpdateAsync(currentMonthlyBudgetFixture);
 
-            await Publish(updatedBudgetFixture ?? throw new InvalidOperationException("Updated budget fixture is null"));
-            return new Result(ResultOutcome.Success);
+            await PublishAsync(updatedBudgetFixture ?? throw new InvalidOperationException("Updated budget fixture is null"));
         }
 
 

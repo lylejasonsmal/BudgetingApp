@@ -15,7 +15,7 @@ namespace MyFirstApp.Services.Implementations.PublisherService
         }
 
         // Publish awaits all subscribers
-        public async Task Publish(T value)
+        public async Task PublishAsync(T value)
         {
             var tasks = _subscribers.Select(sub => sub(value)).ToList();
             await Task.WhenAll(tasks); // ensures all async handlers complete

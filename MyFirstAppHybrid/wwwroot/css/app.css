@@ -1,19 +1,9 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Borel&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans+Narrow:wght@400;700&family=Pacifico&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Twinkle+Star&display=swap');
 * {
     font-family: var(--font);
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-weight: bolder;
-    outline: none;
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    font-size-adjust: 0.4;
-}
 p{
     margin: 0;
 }
@@ -30,9 +20,9 @@ p{
     --peachy-pink: #FFD5C4;
     --creamy-off-white: #FFF1E6;
     --muted-lilac-pink: #D998D8;
-    --primary-black: #282828;
-    --secondary-black: #323232;
-    --border-black: #484848;
+    --primary-black: #121212;
+    --secondary-black: #282828;
+    --border-black: #242424;
     --widget-background-top: #3A4257;
     --widget-background-bottom: #2C3446;
     --widget-card-background: #0F1628;
@@ -52,7 +42,7 @@ p{
     --primary-card-background: var(--primary-black);
     --primary-card-foreground: var(--creamy-off-white);
     --primary-expense-background: var(--secondary-black);
-    --primary-expense-foreground: var(--widget-accent);
+    --primary-expense-foreground: var(--creamy-off-white);
     --primary-popup-background: var(--primary-black);
     --primary-popup-foreground: var(--creamy-off-white);
     --primary-input-color: var(--creamy-off-white);
@@ -94,19 +84,31 @@ p{
 }
 
 .tertiary-font {
-    --font: "Pacifico", cursive;
-    --base-font-size: 1em;
+    --font: "Kanit", sans-serif;
+    --base-font-size: 0.75em;
 }
 
 .quaternary-font {
-    --font: "Twinkle Star", cursive;
-    --base-font-size: 1em;
+    --font: "Montserrat", sans-serif;
+    --base-font-size: 0.75em;
 }
 
 body {
     background: var(--primary-background);
     color: var(--primary-font-color);
     font-size: var(--base-font-size);
+    width: 100vw;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700 !important;
+    outline: none;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    font-size-adjust: 0.4;
 }
 
 .page {
@@ -115,8 +117,8 @@ body {
     justify-content: flex-start;
     align-items: center;
     gap: 1vh;
-    padding: 10px;
-    width: 100vw;
+    padding: 5px;
+    width: 100%;
     min-height: 100vh;
     overflow-y: scroll;
     margin: 0px;
@@ -125,8 +127,12 @@ body {
 
 
 a {
-    color: var(--primary-black);
+    color: var(--primary-button-foreground) !important;
     text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-button-background);
 }
 
 input {
@@ -153,9 +159,9 @@ input:focus {
 
 textarea {
     border: 1px solid var(--border-black);
-    border-radius: 25px;
-    min-height: 80px;
-    padding: 10px;
+    border-radius: 15px;
+    min-height: 100px;
+    padding: 15px;
     min-width: 300px;
     width: 100%;
     background: var(--primary-input-background);
@@ -175,7 +181,7 @@ textarea:focus {
     color: var(--primary-input-focus);
 }
 
-button{
+button {
     all: unset;
     border: 1px solid var(--primary-button-border);
     background: var(--primary-button-background);
@@ -186,6 +192,12 @@ button{
     min-width: 75px;
     text-align: center;
     margin: 5px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+button:active {
+    transform: scale(0.9);
+    opacity: 0.75;
 }
 
 .floating-button {
@@ -236,7 +248,7 @@ button{
     border-radius: 10px;
     width: 100%;
     flex: 1;
-    gap: 10px;
+    gap: 15px;
 }
 
 .icon {
@@ -254,9 +266,25 @@ button{
     margin: 5px;
 }
 
+.icon-button {
+    height: 100%;
+    aspect-ratio: 1/1;
+    border: 2px solid var(--primary-button-border);
+    background: var(--primary-button-background);
+    padding: 10px;
+    color: var(--primary-button-foreground);
+    border-radius: 100px;
+}
+
 .error {
     background: crimson;
     color: var(--creamy-off-white);
+    backdrop-filter: none;
+}
+
+.error-message {
+    width: 300px;
+    gap: 50px;
 }
 
 .experimental .info-card {
@@ -278,4 +306,52 @@ button{
     border: 1px solid rgba(214, 164, 240, 0.25);
     box-shadow: 0 0 30px rgba(214, 164, 240, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.05);
     overflow: hidden;
+}
+
+.app-toast {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    z-index: 3000;
+    position: fixed;
+    top: 30px;
+    background: var(--primary-background);
+    color: lightgreen;
+    border: 1px solid lightgreen;
+    width: 300px;
+    padding: 10px;
+    border-radius: 10px;
+    animation: moveDown 0.1s ease-in, moveUp 0.5s ease-in 4.5s forwards;
+    font-weight: bolder;
+}
+
+.light-theme .app-toast {
+    color: darkgreen;
+    border: 1px solid darkgreen;
+}
+
+
+@keyframes moveDown{
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes moveUp {
+    from {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
 }

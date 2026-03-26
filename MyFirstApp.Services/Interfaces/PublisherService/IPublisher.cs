@@ -3,6 +3,6 @@
     public interface IPublisher<T>
     {
         IDisposable Subscribe(Func<T, Task> handler);
-        Task Publish(T value);
+        Task PublishAsync(T value);
     }
 }

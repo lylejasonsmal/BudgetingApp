@@ -5,7 +5,7 @@
 
 @if (_expense is not null)
 {
-    <CardWrapperComponent HeaderText="@_expense.ExpenseName" IconName="edit_note" OnIconClick="OpenPopupAsync">
+    <CardWrapperComponent HeaderText="@_expense.ExpenseName" IconName="@(!_expense.IsPaidFor? "edit_note":null)" OnIconClick="OpenPopupAsync">
         <div class="main-body @(_expense.IsPaidFor? "paid-expense" : "")">
             <div class="container">
                 <div class="info-card">
@@ -28,7 +28,7 @@
                     </div>
                     <div>
                         <div class="icon @(_expense.ActualAmount > _expense.BudgetedForAmount ? "error" : "")">
-                            <MaterialDesignIconComponent IconName="@(_expense.ActualAmount > _expense.BudgetedForAmount ? "arrow_upward" : "check")"/>
+                            <MaterialDesignIconComponent IconName="@(_expense.ActualAmount > _expense.BudgetedForAmount ? "money_off" : "check")" />
                         </div>
                         <p class="caption">@(_expense.ActualAmount > _expense.BudgetedForAmount ? "Above Your Budget" : "Within Your Budget")</p>
                     </div>

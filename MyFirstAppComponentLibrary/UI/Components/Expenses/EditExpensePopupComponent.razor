@@ -1,15 +1,21 @@
 ﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject ExpenseRepository ExpenseRepository
 @inject IExpenseService ExpenseService
+@inject IToastService ToastService
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Expense">
+    
+    <button class="error" @onclick="DeleteExpenseAsync">
+        <MaterialDesignIconComponent IconName="delete" />
+    </button>
+
     <div class="body">
 
-        @if (_error is not null)
+        @foreach (var error in _errors)
         {
-            <div class="info-card error">
+            <div class="info-card error error-message">
                 <h4>Error</h4>
-                <p>@_error</p>
+                <p>@error</p>
             </div>
         }
 
@@ -52,10 +58,12 @@
     private double? _actualAmount;
     private string? _notes;
 
-    private string? _error;
+    private IList<string> _errors = [];
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
         _expense = await ExpenseRepository.GetByIdAsync(Id);
 
         if (_expense is not null)
@@ -66,14 +74,14 @@
             _notes = _expense.Notes;
         }
 
-        _error = null;
+        _errors = [];
 
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task CancelAsync()
     {
-        _error = null;
+        _errors = [];
         await VisibleChanged.InvokeAsync(false);
     }
 
@@ -90,13 +98,29 @@
 
         if (result.Successful)
         {
-            _error = null;
+            _errors = [];
             await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync($"Successfully updated '{_expense.ExpenseName}' !");
+            
+            _expenseName = null;
+            _budgetedForAmount = null;
+            _actualAmount = null;
+            _notes = null;
         }
-        else if (result.Unsuccessful)
+        else if (result.Unsuccessful && result.Errors is not null)
         {
-            _error = result.Error;
+            _errors = result.Errors;
             await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task DeleteExpenseAsync()
+    {
+        if (_expense is not null)
+        {
+            await ExpenseService.DeleteExpenseAsync(_expense);
+            await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync($"Successfully deleted '{_expense.ExpenseName}' !");
         }
     }
 }
