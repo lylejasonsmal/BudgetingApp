@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg width="456" height="456" viewBox="0 0 456 456" xmlns="http://www.w3.org/2000/svg">
 	<!-- Background -->
-	<rect x="0" y="0" width="456" height="456" fill="#282828" />
+	<rect x="0" y="0" width="456" height="456" fill="#121212" />
 
 	<!-- Foreground with more padding -->
 	<g transform="translate(114, 114) scale(14)">

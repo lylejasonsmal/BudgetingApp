@@ -1,5 +1,6 @@
 ﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject IJSRuntime JS
+@inject IToastService ToastService
 
 <CardWrapperComponent HeaderText="App Settings" IconName="settings">
     <div class="card-body">
@@ -19,7 +20,7 @@
         {
             @if (font != _fonts[_currentFontIndex])
             {
-                <button @onclick="() => SetCurrentFontAsync(font)">
+                <button style="font-family: @font;" @onclick="() => SetCurrentFontAsync(font)">
                     @($"Switch To '{font}'")
                 </button>
             }
@@ -42,7 +43,7 @@
     private bool _isExperimental;
 
     private readonly string[] _fontClassNames = ["default-font", "secondary-font", "tertiary-font", "quaternary-font"];
-    private readonly string[] _fonts = ["Poppins", "Borel", "Pacifico", "Twinkle Star"];
+    private readonly string[] _fonts = ["Poppins", "Borel", "Kanit", "Montserrat"];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -81,6 +82,7 @@
         _currentFontIndex = index;
         await JS.InvokeVoidAsync("setFont", _fontClassNames[index]);
         await InvokeAsync(StateHasChanged);
+        await ToastService.ShowSuccessToastAsync($"Changed your default font to '{_fonts[index]}' !");
     }
 
     private async Task ToggleExperimentalThemeAsync()

@@ -8,7 +8,7 @@
 }
 
 .paid-expense {
-    filter: blur(4px) brightness(90%);
+    display: none;
 }
 
 .container {

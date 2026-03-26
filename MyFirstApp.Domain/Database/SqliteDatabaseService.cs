@@ -7,7 +7,7 @@ namespace MyFirstApp.Domain.Database;
 public class SqliteDatabaseService
 {
     private SQLiteAsyncConnection? _dbConnection;
-
+    private bool _hasBeenSeeded;
     public SqliteDatabaseService() { }
 
     public async Task<SQLiteAsyncConnection> GetConnectionAsync()
@@ -24,7 +24,10 @@ public class SqliteDatabaseService
         await _dbConnection.CreateTableAsync<ExpenseModel>();
         await _dbConnection.CreateTableAsync<UserModel>();
 
-        await SeedDatabaseAsync(_dbConnection);
+        if (_hasBeenSeeded is false)
+        {
+            await SeedDatabaseAsync(_dbConnection);
+        }
 
         return _dbConnection;
     }
@@ -57,24 +60,6 @@ public class SqliteDatabaseService
             fixtureId = existingFixture.Id;
         }
 
-        var existingExpenses = await dbConnection.Table<ExpenseModel>()
-                                       .Where(e => e.MonthlyBudgetFixtureId == fixtureId)
-                                       .ToListAsync();
-
-        if (existingExpenses.Count == 0)
-        {
-            var expenses = new[]
-            {
-                new ExpenseModel { ExpenseName = "Rent", BudgetedForAmount = 8000, ActualAmount = 8000, IsPaidFor = true, IsARecurringExpense = true, MonthlyBudgetFixtureId = fixtureId, Notes = "Put aside money for other expenses."},
-                new ExpenseModel { ExpenseName = "Groceries", BudgetedForAmount = 3000, ActualAmount = 2750, IsPaidFor = true, IsARecurringExpense = true, MonthlyBudgetFixtureId = fixtureId,  Notes = "Less luxuries, more protein."},
-                new ExpenseModel { ExpenseName = "Electricity", BudgetedForAmount = 1500, ActualAmount = 1400, IsPaidFor = true, IsARecurringExpense = true, MonthlyBudgetFixtureId = fixtureId },
-                new ExpenseModel { ExpenseName = "Transport", BudgetedForAmount = 1200, ActualAmount = 1100, IsPaidFor = true, IsARecurringExpense = true, MonthlyBudgetFixtureId = fixtureId },
-                new ExpenseModel { ExpenseName = "Entertainment", BudgetedForAmount = 800, ActualAmount = 600, IsPaidFor = false, IsARecurringExpense = false, MonthlyBudgetFixtureId = fixtureId }
-            };
-
-            await dbConnection.InsertAllAsync(expenses);
-        }
-
         var existingUsers = await dbConnection.Table<UserModel>()
             .ToListAsync();
 
@@ -84,5 +69,7 @@ public class SqliteDatabaseService
 
             await dbConnection.InsertAsync(user);
         }
+
+        _hasBeenSeeded = true;
     }
 }

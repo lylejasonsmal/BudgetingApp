@@ -1,0 +1,21 @@
+.no-expenses-container{
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    text-align: left;
+}
+
+.no-savings-container {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    text-align: left;
+}

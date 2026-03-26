@@ -13,5 +13,17 @@ namespace MyFirstApp.Domain.Models
         public bool IsARecurringExpense { get; set; }
         public int MonthlyBudgetFixtureId { get; set; }
         public string? Notes { get; set; }
+
+        public bool TryValidate(out string? error)
+        {
+            if (string.IsNullOrWhiteSpace(ExpenseName))
+            {
+                error = "Expense name cannot be empty.";
+                return false;
+            }
+
+            error = null;
+            return true;
+        }
     }
 }

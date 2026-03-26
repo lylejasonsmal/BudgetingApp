@@ -4,7 +4,7 @@
 
 @if (_budgetFixture is not null)
 {
-    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="calendar_month" Link="/statistics-dashboard">
+    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="calendar_month" Link="/statistics-dashboard" IsLargeText="true">
         <div class="card-body">
             <div class="info-card">
                 <p>Net Salary</p>
@@ -27,27 +27,38 @@
                 <h2>R@_budgetFixture.LeftOverAmount</h2>
             </div>
             
-            <h6>Insights</h6>
             <div class="info-card">
-                <MaterialDesignIconComponent IconName="analytics" />
-                <p>This is where insights about your monthly budget will go.</p>
-            </div>
-
-            <div class="info-card">
-                <MaterialDesignIconComponent IconName="paid" />
-                <p>
-                    <strong>@_paidExpenseCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are paid for.
-                    <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_paidExpenseCount"/>
-                </p>
+                <h2>View</h2>
+                <div class="card-body">
+                    <a href="#expenses" class="link">Expenses</a>
+                    <a href="#savings">Savings</a>
+                </div>
             </div>
             
-            <div class="info-card">
-                <MaterialDesignIconComponent IconName="trending_down" />
-                <p>
-                    <strong>@_overBudgetCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are overbudget.
-                    <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_overBudgetCount" IsDanger="true"/>
-                </p>
-            </div>
+            @if (_budgetFixture.NumberOfExpenses > 0)
+            {
+                <h6>Insights</h6>
+                <div class="info-card">
+                    <MaterialDesignIconComponent IconName="analytics"/>
+                    <p>This is where insights about your monthly budget will go.</p>
+                </div>
+
+                <div class="info-card">
+                    <MaterialDesignIconComponent IconName="paid"/>
+                    <p>
+                        <strong>@_paidExpenseCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are paid for.
+                        <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_paidExpenseCount"/>
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <MaterialDesignIconComponent IconName="trending_down"/>
+                    <p>
+                        <strong>@_overBudgetCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are overbudget.
+                        <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_overBudgetCount" IsDanger="true"/>
+                    </p>
+                </div>
+            }
         </div>
     </CardWrapperComponent>
 }
