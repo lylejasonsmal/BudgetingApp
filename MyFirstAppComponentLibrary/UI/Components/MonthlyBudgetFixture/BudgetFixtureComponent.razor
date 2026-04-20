@@ -1,38 +1,32 @@
-﻿@namespace MyFirstAppComponentLibrary.UI.Components
+﻿@using MyFirstAppComponentLibrary.UI.Components.MonthlyBudgetFixture
+@namespace MyFirstAppComponentLibrary.UI.Components
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 @inject ExpenseRepository ExpenseRepository
 
 @if (_budgetFixture is not null)
 {
-    <CardWrapperComponent HeaderText="@_budgetFixture.Month" IconName="calendar_month" Link="/statistics-dashboard" IsLargeText="true">
+    <CardWrapperComponent HeaderText="@DateTime.Today.ToString("MMMM")" IconName="edit" Link="/statistics-dashboard" IsLargeText="true" OnIconClick="OpenPopupAsync">
         <div class="card-body">
-            <div class="info-card">
-                <p>Net Salary</p>
-                <h2>R@_budgetFixture.StoredNetSalary</h2>
-            </div>
             
             <h6>Summary</h6>
             <div class="info-card">
-                <p>Budgeted For</p>
-                <h2>R@_budgetFixture.BudgetedForAmount</h2>
+                <p class="secondary-text">Net Salary</p>
+                <h6>R@_budgetFixture.StoredNetSalary</h6>
             </div>
 
             <div class="info-card">
-                <p>Actual Expenditure</p>
-                <h2>R@(_budgetFixture.StoredNetSalary - _budgetFixture.LeftOverAmount)</h2>
+                <p class="secondary-text">Budgeted For</p>
+                <h6>R@_budgetFixture.BudgetedForAmount</h6>
             </div>
 
             <div class="info-card">
-                <p>Amount Left Over</p>
-                <h2>R@_budgetFixture.LeftOverAmount</h2>
+                <p class="secondary-text">Actual Expenditure</p>
+                <h6>R@(_budgetFixture.StoredNetSalary - _budgetFixture.LeftOverAmount)</h6>
             </div>
-            
+
             <div class="info-card">
-                <h2>View</h2>
-                <div class="card-body">
-                    <a href="#expenses" class="link">Expenses</a>
-                    <a href="#savings">Savings</a>
-                </div>
+                <p class="secondary-text">Amount Left Over</p>
+                <h1>R@_budgetFixture.LeftOverAmount</h1>
             </div>
             
             @if (_budgetFixture.NumberOfExpenses > 0)
@@ -40,7 +34,7 @@
                 <h6>Insights</h6>
                 <div class="info-card">
                     <MaterialDesignIconComponent IconName="analytics"/>
-                    <p>This is where insights about your monthly budget will go.</p>
+                    <p class="secondary-text">This is where insights about your monthly budget will go.</p>
                 </div>
 
                 <div class="info-card">
@@ -61,6 +55,8 @@
             }
         </div>
     </CardWrapperComponent>
+
+    <EditBudgetFixtureComponent @bind-Visible="_showPopup"/>
 }
 else
 {
@@ -69,19 +65,24 @@ else
 }
 
 @code {
-    [Parameter] public required int Id { get; set; }
     private MonthlyBudgetFixtureModel? _budgetFixture;
     private int _paidExpenseCount;
     private int _overBudgetCount;
+    private bool _showPopup;
 
     protected override async Task OnParametersSetAsync()
     {
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixture = model;
-            _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(Id);
-            _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(Id);
+            _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(model.Id);
+            _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(model.Id);
             await InvokeAsync(StateHasChanged);
         });
-     }
+    }
+
+    private void OpenPopupAsync()
+    {
+        _showPopup = true;
+    }
 }

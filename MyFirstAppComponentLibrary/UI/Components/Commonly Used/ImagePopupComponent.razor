@@ -1,0 +1,26 @@
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+
+<PopupWrapperComponent @bind-Visible="Visible">
+    <div class="image-container">
+    @if (ImageBytes is not null)
+    {
+        <img src="@ImageBytes"/>
+    }
+    else
+    {
+        <MaterialDesignIconComponent IconName="image"/>
+        <h1>Couldn't find the image</h1>
+    }
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public string? ImageBytes{ get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}

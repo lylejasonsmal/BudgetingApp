@@ -5,20 +5,29 @@
 
     <div class="navigation-container @(IsActive("/") ? "active" : "")"
          @onclick="GoToThread">
-        <MaterialDesignIconComponent IconName="gesture" />
-        <h6 id="thread-navigation-link">Thread</h6>
+        <MaterialDesignIconComponent IconName="home" />
+        @if (!IsActive("/"))
+        {
+            <strong id="thread-navigation-link" class="caption">Home</strong>
+        }
     </div>
 
     <div class="navigation-container @(IsActive("/statistics-dashboard") ? "active" : "")"
          @onclick="GoToStats">
-        <MaterialDesignIconComponent IconName="pie_chart" />
-        <h6 id="stats-navigation-link">Statistics</h6>
+        <MaterialDesignIconComponent IconName="analytics" />
+        @if (!IsActive("/statistics-dashboard"))
+        {
+            <strong id="stats-navigation-link" class="caption">Statistics</strong>
+        }
     </div>
 
     <div class="navigation-container @(IsActive("/profile") ? "active" : "")"
          @onclick="GoToProfile">
         <MaterialDesignIconComponent IconName="person" />
-        <h6 id="profile-navigation-link">Profile</h6>
+        @if (!IsActive("/profile"))
+        {
+            <strong id="profile-navigation-link" class="caption">Profile</strong>
+        }
     </div>
 
 </div>

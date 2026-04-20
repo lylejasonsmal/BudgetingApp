@@ -2,8 +2,8 @@
 
 @if (_showToast)
 {
-    <div class="app-toast">
-        <MaterialDesignIconComponent IconName="check_small"/>
+    <div class="app-toast @(_isSuccess ? "" : "error-app-toast")">
+        <MaterialDesignIconComponent IconName="@(_isSuccess ? "check_small" : "error")" />
         <p>
             @_message
         </p>
@@ -21,11 +21,8 @@
 
         await ToastService.SubscribeAsync(async result =>
         {
-            if (result.Successful)
-            {
-                _isSuccess = true;
-                _message = result.Message?? "No message";
-            }
+            _isSuccess = result.Successful;
+            _message = result.Message?? "No message";
             _showToast = true;
             await InvokeAsync(StateHasChanged);
             await Task.Delay(5000);

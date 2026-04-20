@@ -16,5 +16,10 @@ namespace MyFirstApp.Services.Implementations.ToastService
         {
             await PublishAsync(new Result(ResultOutcome.Success, null, message));
         }
+
+        public async Task ShowFailureToastAsync(string message)
+        {
+            await PublishAsync(new Result(ResultOutcome.Failure, null, message));
+        }
     }
 }

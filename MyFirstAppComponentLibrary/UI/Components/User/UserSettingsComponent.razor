@@ -4,34 +4,39 @@
 
 <CardWrapperComponent HeaderText="App Settings" IconName="settings">
     <div class="card-body">
-        <h4>Current Color Scheme</h4>
-    <p>@(_isDarkMode ? "'Dark Mode'" : "'Light Mode'")</p>
+        <div class="info-card">
+            <h6>@(_isDarkMode ? "Dark Mode" : "Light Mode")</h6>
 
-    <button @onclick="ToggleThemeAsync">
-        @(_isDarkMode ? "Switch To Light Mode" : "Switch To Dark Mode")
-        </button>
-    </div>
+            <button @onclick="ToggleThemeAsync">
+                <MaterialDesignIconComponent IconName="@(_isDarkMode ? "light_mode" : "dark_mode")" />
+            </button>
+        </div>
 
-    <div class="card-body">
-        <h4>Current Font</h4>
-        <p>@($"'{_fonts[_currentFontIndex]}'")</p>
+        <div class="info-card">
+            <div>
+                <h6>Current Font</h6>
+                <p class="secondary-text">@($"{_fonts[_currentFontIndex]}")</p>
+            </div>
+
+            <div>
+                @foreach (var font in _fonts)
+                {
+                    @if (font != _fonts[_currentFontIndex])
+                    {
+                        <button style="font-family: @font;" @onclick="() => SetCurrentFontAsync(font)">
+                            @($"Switch To '{font}'")
+                        </button>
+                    }
+                }
+            </div>
+        </div>
         
-        @foreach (var font in _fonts)
-        {
-            @if (font != _fonts[_currentFontIndex])
-            {
-                <button style="font-family: @font;" @onclick="() => SetCurrentFontAsync(font)">
-                    @($"Switch To '{font}'")
-                </button>
-            }
-        }
-    </div>
-    
-    <div class="card-body">
-        <h4>Experimental</h4>
-        <p>Experimental Theme*</p>
+        <div class="info-card">
+            <h6>Experimental</h6>
+            <MaterialDesignIconComponent IconName="experiment"/>
+        </div>
 
-        <button @onclick="ToggleExperimentalThemeAsync">
+        <button @onclick="ToggleExperimentalThemeAsync" style="display: none;">
             @(_isExperimental ? "Reset" : "Experiment")
         </button>
     </div>

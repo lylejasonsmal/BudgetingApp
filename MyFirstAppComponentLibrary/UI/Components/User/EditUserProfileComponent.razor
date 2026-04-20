@@ -1,0 +1,127 @@
+﻿@inject IUserService UserService
+@inject IToastService ToastService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Your Profile">
+    
+    @if (_profileImageSrc is null)
+    {
+        <div class="image-placeholder">
+            <MaterialDesignIconComponent IconName="person" />
+        </div>
+    }
+    else
+    {
+        <div class="image-placeholder">
+            <img src="@_profileImageSrc" />
+        </div>
+        <button class="error" @onclick="RemoveImageAsync">Remove Image</button>
+    }
+
+    <div>
+        <h6>Profile Image</h6>
+        <InputFile OnChange="HandleFileSelected" />
+    </div>
+    
+    <div>
+        <h6>Username</h6>
+        <input placeholder="What should we call you?" @bind="_user.Username" />
+    </div>
+
+    <div>
+        <h6>First Name</h6>
+        <input placeholder="What's your name?" @bind="_user.FirstName" />
+    </div>
+
+    <div>
+        <h6>Surname</h6>
+        <input placeholder="What's your surname?" @bind="_user.LastName" />
+    </div>
+    
+    <div>
+        <h6>Birthday</h6>
+        <InputDate @bind-Value="_user.Birthday" />
+    </div>
+    
+    <div>
+        <h6>Who Are You?</h6>
+        <textarea placeholder="Tell us about yourself" @bind="_user.Description"></textarea>
+    </div>
+    
+    <div class="popup-actions">
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button @onclick="UpdateAsync">Update</button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public required UserModel User { get; init; }
+
+    private string? _profileImageSrc;
+    private UserModel _user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _user = new UserModel
+        {
+            Id = User.Id,
+            Username = User.Username,
+            FirstName = User.FirstName,
+            LastName = User.LastName,
+            Birthday = User.Birthday,
+            Description = User.Description,
+            ProfileImage = (byte[])User.ProfileImage?.Clone()!
+        };
+        if (_user.ProfileImage != null)
+        {
+            _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
+        }
+        else
+        {
+            _profileImageSrc = null;
+        }
+        
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+
+        var bytes = ms.ToArray();
+
+        _user.ProfileImage = bytes;
+        _profileImageSrc = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CancelAsync()
+    {
+        _user = new UserModel();
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task UpdateAsync()
+    {
+        var result = await UserService.UpdateUserAsync(_user);
+
+        if (result.Successful)
+        {
+            await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync($"Successfully updated your profile, {_user.FirstName}!");
+        }
+    }
+
+    private async Task RemoveImageAsync()
+    {
+        _profileImageSrc = null;
+        _user.ProfileImage = null;
+        await InvokeAsync(StateHasChanged);
+    }
+}

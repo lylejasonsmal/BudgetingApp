@@ -8,7 +8,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 10px;
     overflow: hidden;
 }
 
@@ -18,12 +17,5 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-}
-
-.main-user-card {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
     align-items: center;
 }

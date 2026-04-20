@@ -8,7 +8,7 @@
     background: var(--primary-card-background);
     color: var(--primary-card-foreground);
     overflow: hidden;
-    border: 1px solid var(--border-black);
+    border: 1px solid var(--primary-border);
 }
 
 .card-header[b-0ger2c1501] {
@@ -34,7 +34,7 @@
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-    border-top: 1px solid var(--border-black);
+    border-top: 1px solid var(--primary-border);
     color: var(--primary-font-color);
     padding: 7.5px;
 }
@@ -67,10 +67,22 @@
         transform: translateX(150%);
     }
 }
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/ImagePopupComponent.razor.rz.scp.css */
+.image-container[b-w5s0bmlqnv]{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+img[b-w5s0bmlqnv] {
+   width: 100vw;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/MaterialDesignIconComponent.razor.rz.scp.css */
 .material-symbols-outlined[b-mvf7z1p1va] {
     font-family: 'Material Symbols Outlined' !important;
-    font-variation-settings: 'FILL' 1, 'wght' 800, 'GRAD' 50, 'opsz' 48;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 50, 'opsz' 48;
 }
 
 .icon .material-symbols-outlined[b-mvf7z1p1va] {
@@ -95,7 +107,7 @@
     background: var(--primary-popup-background);
     width: 100vw;
     min-height: 100vh;
-    border: 1px solid var(--border-black);
+    border: 1px solid var(--primary-border);
     animation: popupSlideIn-b-dz8qorjlsg 0.35s ease;
 }
 
@@ -126,8 +138,9 @@
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 95vh;
     padding: 10px;
+    overflow-y: scroll;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/ProgressBarComponent.razor.rz.scp.css */
 .progress-container[b-133hntvjuu] {
@@ -148,24 +161,6 @@
 
 .danger[b-133hntvjuu] {
     background-color: crimson;
-}
-/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/AddExpensePopupComponent.razor.rz.scp.css */
-.body[b-de37qz5ty4] {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 25px;
-    min-height: 50%;
-}
-/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/EditExpensePopupComponent.razor.rz.scp.css */
-.body[b-q384oxpmli] {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 25px;
-    min-height: 50%;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpenseComponent.razor.rz.scp.css */
 .main-body[b-ohjxmp6wew] {
@@ -190,11 +185,81 @@
     padding: 0px;
 }
 
+/* _content/MyFirstAppComponentLibrary/UI/Components/HeaderBarComponent.razor.rz.scp.css */
+.header-bar[b-719fqv182b] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    background: var(--primary-nav-bar-background);
+    height: 60px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--primary-border);
+    z-index: 1000;
+    padding: 5px;
+}
+
+.user-container[b-719fqv182b] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+    background: var(--primary-expense-background);
+    gap: 5px;
+    padding: 0;
+    padding-right: 5px;
+}
+
+img[b-719fqv182b]{
+    aspect-ratio: 1/1;
+    width: 40px;
+    overflow: hidden;
+    border-radius: 100%;
+}
+
+.image-placeholder[b-719fqv182b] {
+    aspect-ratio: 1/1;
+    width: 40px;
+    background: var(--primary-background);
+    color: var(--primary-button-foreground);
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/MonthlyBudgetFixture/BudgetFixtureComponent.razor.rz.scp.css */
 .card-body[b-yx3hia3rd7]{
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/MonthlyBudgetFixture/EditBudgetFixtureComponent.razor.rz.scp.css */
+.image-placeholder[b-q6suo9ajbb] {
+    aspect-ratio: 1/1;
+    width: 125px;
+    background: var(--primary-expense-background);
+    color: var(--primary-button-foreground);
+    border-radius: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+img[b-q6suo9ajbb] {
+    aspect-ratio: 1/1;
+    width: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Components/NavigationBarComponent.razor.rz.scp.css */
 .navigation-bar[b-mhmy4p8bay] {
@@ -203,15 +268,15 @@
     justify-content: space-evenly;
     align-items: center;
     position: fixed;
-    bottom: 0;
-    width: 100vw;
+    bottom: 10px;
+    width: 90vw;
     background: var(--primary-nav-bar-background);
-    height: 75px;
+    height: 60px;
     overflow: hidden;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border-top: 1px solid var(--border-black);
+    border-radius: 25px;
+    border: 1px solid var(--primary-border);
     z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .navigation-container[b-mhmy4p8bay] {
@@ -229,23 +294,69 @@
 .active[b-mhmy4p8bay] {
     color: var(--creamy-off-white) !important;
     background: var(--border-black);
-    border: 5px solid var(--primary-button-background);
+    outline: 2px solid var(--primary-button-background);
 }
 
 .navigation-container:hover[b-mhmy4p8bay]{
     opacity: 75%;
 }
-/* _content/MyFirstAppComponentLibrary/UI/Components/User/UserProfileComponent.razor.rz.scp.css */
-.image-placeholder[b-6crowhzq3g]{
+/* _content/MyFirstAppComponentLibrary/UI/Components/User/EditUserProfileComponent.razor.rz.scp.css */
+.image-placeholder[b-te5u6a20mt] {
     aspect-ratio: 1/1;
-    width: 75px;
+    width: 125px;
     background: var(--primary-expense-background);
     color: var(--primary-button-foreground);
-    border-radius: 100%;
+    border-radius: 10%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+}
+
+img[b-te5u6a20mt] {
+    aspect-ratio: 1/1;
+    width: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/User/UserProfileComponent.razor.rz.scp.css */
+.image-placeholder[b-6crowhzq3g] {
+    aspect-ratio: 1/1;
+    width: 125px;
+    background: var(--primary-expense-background);
+    color: var(--primary-button-foreground);
+    border-radius: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    overflow: hidden;
+}
+
+img[b-6crowhzq3g] {
+    aspect-ratio: 1/1;
+    width: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-user-card[b-6crowhzq3g] {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/User/UserSettingsComponent.razor.rz.scp.css */
+.card-body[b-p3y6gfeqxy] {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Pages/ThreadPage.razor.rz.scp.css */
 .no-expenses-container[b-8dz0qa7pat]{
