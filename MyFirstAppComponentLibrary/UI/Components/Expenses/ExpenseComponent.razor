@@ -2,6 +2,7 @@
 @inject ExpenseRepository ExpenseRepository
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 @inject IExpenseService ExpenseService
+@inject IToastService ToastService
 
 @if (_expense is not null)
 {
@@ -47,14 +48,17 @@
         @if (!_expense.IsPaidFor)
         {
             <div class="container">
-                <h6>Is this expense paid for?</h6>
+                <h6 class="secondary-text">Is this expense paid for?</h6>
                 <button @onclick="TogglePaidStateAsync">Yes</button>
             </div>
         }
         else
         {
             <div class="container">
-                <button class="secondary-button" @onclick="TogglePaidStateAsync">Not Paid For Yet?</button>
+                <div class="info-card">
+                    <h6 class="secondary-text">This expense is paid.</h6>
+                    <button @onclick="TogglePaidStateAsync">Not Paid For Yet?</button>
+                </div>
             </div>
         }
     </CardWrapperComponent>
@@ -92,6 +96,10 @@ else
         {
             _expense.IsPaidFor = !_expense.IsPaidFor;
             await ExpenseService.UpdateExpenseAsync(_expense);
+            if (_expense.IsPaidFor)
+            {
+                await ToastService.ShowSuccessToastAsync("Paid!");
+            }
         }
     }
 }

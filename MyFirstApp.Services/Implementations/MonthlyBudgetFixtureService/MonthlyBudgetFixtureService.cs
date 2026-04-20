@@ -64,8 +64,6 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
             return true;
         }
 
-
-
         public async Task RecalculateAndUpdateBudgetFixtureAsync()
         {
             var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
@@ -85,6 +83,26 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
             var updatedBudgetFixture = await _monthlyBudgetFixtureRepository.UpdateAsync(currentMonthlyBudgetFixture);
 
             await PublishAsync(updatedBudgetFixture ?? throw new InvalidOperationException("Updated budget fixture is null"));
+        }
+
+        public async Task<Result> TryUpdateBudget(double netSalary)
+        {
+            var resultBuilder = Result.Builder();
+
+            var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
+
+            if (netSalary < currentMonthlyBudgetFixture.BudgetedForAmount)
+            {
+                resultBuilder.WithError("The net salary you've inputted is below your budgeted for amount. Please update your expenses before proceeding.");
+            }
+            else
+            {
+                currentMonthlyBudgetFixture.StoredNetSalary = netSalary;
+                await _monthlyBudgetFixtureRepository.UpdateAsync(currentMonthlyBudgetFixture);
+                await RecalculateAndUpdateBudgetFixtureAsync();
+            }
+
+            return resultBuilder.Create();
         }
 
 

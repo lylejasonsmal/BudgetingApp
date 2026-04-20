@@ -4,35 +4,33 @@
 @inject IToastService ToastService
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Add Expense">
-    <div class="body">
-        
-        @foreach (var error in _errors)
-        {
-            <div class="info-card error error-message">
-                <h4>Error</h4>
-                <p>@error</p>
-            </div>
-        }
 
-        <div>
-            <h6>Expense Name</h6>
-            <input placeholder="Expense Name" @bind="_expenseName"/>
+    @foreach (var error in _errors)
+    {
+        <div class="info-card error error-message">
+            <h4>Error</h4>
+            <p>@error</p>
         </div>
+    }
 
-        <div>
-            <h6>Budgeted For Amount</h6>
-            <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
-        </div>
+    <div>
+        <h6>Expense Name</h6>
+        <input placeholder="Expense Name" @bind="_expenseName"/>
+    </div>
 
-        <div>
-            <h6>Actual Amount</h6>
-            <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
-        </div>
+    <div>
+        <h6>Budgeted For Amount</h6>
+        <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
+    </div>
 
-        <div>
-            <h6>Notes</h6>
-            <textarea placeholder="Notes" @bind="_notes"></textarea>
-        </div>
+    <div>
+        <h6>Actual Amount</h6>
+        <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
+    </div>
+
+    <div>
+        <h6>Notes</h6>
+        <textarea placeholder="Notes" @bind="_notes"></textarea>
     </div>
 
     <div class="popup-actions">
@@ -93,16 +91,12 @@
             _errors = [];
             await VisibleChanged.InvokeAsync(false);
             await ToastService.ShowSuccessToastAsync($"Successfully added a new expense '{expense.ExpenseName}'!");
-
-            _expenseName = null;
-            _budgetedForAmount = null;
-            _actualAmount = null;
-            _notes = null;
         }
         else if (result.Unsuccessful && result.Errors is not null)
         {
             _errors = result.Errors;
             await InvokeAsync(StateHasChanged);
+            await ToastService.ShowFailureToastAsync("Process failed, try again.");
         }
     }
 }

@@ -3,6 +3,7 @@ using MyFirstApp.Domain.Database;
 using MyFirstApp.Services.Implementations.ExpenseService;
 using MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService;
 using MyFirstApp.Services.Implementations.ToastService;
+using MyFirstApp.Services.Implementations.UserService;
 using MyFirstApp.Services.Interfaces;
 using MyFirstApp.Services.Repositories;
 
@@ -24,6 +25,7 @@ namespace MyFirstAppHybrid
             builder.Services.AddSingleton<IMonthlyBudgetFixtureService, MonthlyBudgetFixtureService>();
             builder.Services.AddSingleton<IExpenseService, ExpenseService>();
             builder.Services.AddSingleton<IToastService, ToastService>();
+            builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<SqliteDatabaseService>();
             builder.Services.AddSingleton<MonthlyBudgetFixtureRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();

@@ -1,0 +1,54 @@
+﻿@inject IToastService ToastService
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Current Budget Fixture">
+    
+    @foreach (var error in _errors)
+    {
+        <div class="info-card error error-message">
+            <h4>Error</h4>
+            <p>@error</p>
+        </div>
+    }
+
+    <div>
+        <h6>Net Salary</h6>
+        <input placeholder="What is your salary after deductions?" @bind="_netSalary"/>
+    </div>
+
+    <div class="popup-actions">
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button @onclick="UpdateAsync">Update</button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+
+    private double _netSalary;
+    private IList<string> _errors = [];
+
+    private async Task CancelAsync()
+    {
+        _errors = [];
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task UpdateAsync()
+    {
+        var result = await MonthlyBudgetFixtureService.TryUpdateBudget(_netSalary);
+        if (result.Successful)
+        {
+            _errors = [];
+            await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync("Successfully updated!");
+        }
+        else
+        {
+            _errors = result.Errors!;
+            await InvokeAsync(StateHasChanged);
+            await ToastService.ShowFailureToastAsync("Process failed, try again.");
+        }
+    }
+}

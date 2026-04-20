@@ -7,5 +7,6 @@ namespace MyFirstApp.Services.Interfaces
     {
         Task SubscribeAsync(Func<Result, Task> handler);
         Task ShowSuccessToastAsync(string message);
+        Task ShowFailureToastAsync(string message);
     }
 }

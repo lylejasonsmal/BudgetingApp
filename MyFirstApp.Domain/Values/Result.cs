@@ -20,6 +20,7 @@
                 Successful = false;
                 Unsuccessful = true;
                 Errors = errors;
+                Message = message;
             }
         }
 

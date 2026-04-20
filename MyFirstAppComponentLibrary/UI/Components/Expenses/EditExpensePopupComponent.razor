@@ -9,8 +9,6 @@
         <MaterialDesignIconComponent IconName="delete" />
     </button>
 
-    <div class="body">
-
         @foreach (var error in _errors)
         {
             <div class="info-card error error-message">
@@ -38,7 +36,6 @@
             <h6>Notes</h6>
             <textarea placeholder="Notes" @bind="_notes"></textarea>
         </div>
-    </div>
 
     <div class="popup-actions">
         <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
@@ -101,16 +98,12 @@
             _errors = [];
             await VisibleChanged.InvokeAsync(false);
             await ToastService.ShowSuccessToastAsync($"Successfully updated '{_expense.ExpenseName}' !");
-            
-            _expenseName = null;
-            _budgetedForAmount = null;
-            _actualAmount = null;
-            _notes = null;
         }
         else if (result.Unsuccessful && result.Errors is not null)
         {
             _errors = result.Errors;
             await InvokeAsync(StateHasChanged);
+            await ToastService.ShowFailureToastAsync("Process failed, try again.");
         }
     }
 

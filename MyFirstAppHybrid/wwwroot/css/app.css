@@ -12,6 +12,10 @@ p{
     font-size: 0.4em;
 }
 
+.secondary-text {
+    opacity: 65%;
+}
+
 :root {
     --soft-blush-pink: #F4C7C3;
     --light-bubblegum-pink: #F7A8D0;
@@ -50,6 +54,7 @@ p{
     --primary-input-focus: var(--widget-accent);
     --primary-nav-bar-background: var(--primary-black);
     --primary-nav-bar-foreground: var(--widget-accent);
+    --primary-border: var(--border-black);
 }
 
 
@@ -58,7 +63,7 @@ p{
     --primary-background: var(--creamy-off-white);
     --primary-button-background: var(--soft-blush-pink);
     --primary-button-foreground: var(--primary-black);
-    --primary-button-border: var(--soft-blush-pink);
+    --primary-button-border: var(--primary-black);
     --primary-card-background: var(--creamy-off-white);
     --primary-card-foreground: var(--primary-black);
     --primary-expense-background: var(--soft-blush-pink);
@@ -67,9 +72,10 @@ p{
     --primary-popup-foreground: var(--primary-black);
     --primary-input-color: var(--primary-black);
     --primary-input-background: var(--creamy-off-white);
-    --primary-input-focus: var(--muted-lilac-pink);
+    --primary-input-focus: var(--lavender-pink-darker);
     --primary-nav-bar-background: var(--creamy-off-white);
     --primary-nav-bar-foreground: var(--primary-black);
+    --primary-border: #d5d5d5;
 }
 
 
@@ -98,6 +104,7 @@ body {
     color: var(--primary-font-color);
     font-size: var(--base-font-size);
     width: 100vw;
+    transition: 0.3s;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -122,6 +129,7 @@ h1, h2, h3, h4, h5, h6 {
     min-height: 100vh;
     overflow-y: scroll;
     margin: 0px;
+    margin-top: 35px;
     margin-bottom: 35px;
 }
 
@@ -136,7 +144,7 @@ a:hover {
 }
 
 input {
-    border: 1px solid var(--border-black);
+    border: 1px solid var(--primary-border);
     border-radius: 25px;
     min-height: 30px;
     padding: 10px;
@@ -157,8 +165,32 @@ input:focus {
     color: var(--primary-input-focus);
 }
 
+input[type="file"] {
+    color: #888;
+}
+
+input[type="file"]::file-selector-button {
+    all: unset;
+    border: 1px solid var(--primary-button-border);
+    background: var(--primary-button-background);
+    padding: 10px;
+    color: var(--primary-button-foreground);
+    font-weight: bolder;
+    border-radius: 100px;
+    min-width: 75px;
+    text-align: center;
+    margin: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:active {
+    transform: scale(0.9);
+    opacity: 0.75;
+}
+
 textarea {
-    border: 1px solid var(--border-black);
+    border: 1px solid var(--primary-border);
     border-radius: 15px;
     min-height: 100px;
     padding: 15px;
@@ -212,6 +244,7 @@ button:active {
     background: var(--border-black);
     border: 2px solid var(--primary-button-background);
     animation: hover-up ease-in-out 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes hover-up {
@@ -278,13 +311,15 @@ button:active {
 
 .error {
     background: crimson;
-    color: var(--creamy-off-white);
+    color: var(--creamy-off-white) !important;
     backdrop-filter: none;
 }
 
 .error-message {
     width: 300px;
+    max-height: fit-content;
     gap: 50px;
+    margin: 2px;
 }
 
 .experimental .info-card {
@@ -316,8 +351,8 @@ button:active {
     gap: 10px;
     z-index: 3000;
     position: fixed;
-    top: 30px;
-    background: var(--primary-background);
+    top: 65px;
+    backdrop-filter: blur(20px);
     color: lightgreen;
     border: 1px solid lightgreen;
     width: 300px;
@@ -325,6 +360,14 @@ button:active {
     border-radius: 10px;
     animation: moveDown 0.1s ease-in, moveUp 0.5s ease-in 4.5s forwards;
     font-weight: bolder;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-app-toast {
+    background: crimson;
+    color: var(--creamy-off-white) !important;
+    backdrop-filter: none;
+    border: 1px solid var(--creamy-off-white);
 }
 
 .light-theme .app-toast {

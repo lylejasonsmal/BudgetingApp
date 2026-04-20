@@ -9,5 +9,6 @@ namespace MyFirstApp.Services.Interfaces
         Task SubscribeAsync(Func<MonthlyBudgetFixtureModel, Task> handler);
         Task<bool> CalculateIfExpensesAreWithinBudgetAsync(ExpenseModel expenseModel, ResultBuilder? resultBuilder);
         Task RecalculateAndUpdateBudgetFixtureAsync();
+        Task<Result> TryUpdateBudget(double netSalary);
     }
 }
