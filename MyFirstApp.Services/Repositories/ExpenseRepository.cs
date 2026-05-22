@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using MyFirstApp.Domain.Database;
+using MyFirstApp.Domain.Enums;
 using MyFirstApp.Domain.Models;
 
 namespace MyFirstApp.Services.Repositories
@@ -39,6 +40,46 @@ namespace MyFirstApp.Services.Repositories
 
             return ids;
         }
+
+        public async Task<List<int>> ApplyFiltersAsync(int? budgetFixtureId, IList<ExpenseFilters> filters)
+        {
+            _db ??= await _dbService.GetConnectionAsync();
+            var expenses = await _db.Table<ExpenseModel>()
+                .Where(x => x.MonthlyBudgetFixtureId == budgetFixtureId)
+                .ToListAsync();
+
+
+
+            if (filters.Contains(ExpenseFilters.AlphabeticalOrder))
+            {
+                expenses = expenses.OrderBy(x => x.ExpenseName).ToList();
+            }
+            if (filters.Contains(ExpenseFilters.ReverseAlphabeticalOrder))
+            {
+                expenses = expenses.OrderByDescending(x => x.ExpenseName).ToList();
+            }
+            if (filters.Contains(ExpenseFilters.PaidExpensesFirst))
+            {
+                expenses = expenses.OrderByDescending(x => x.IsPaidFor).ToList();
+            }
+            if (filters.Contains(ExpenseFilters.PaidExpensesLast))
+            {
+                expenses = expenses.OrderBy(x => x.IsPaidFor).ToList();
+            }
+            if (filters.Contains(ExpenseFilters.PaidExpensesOnly))
+            {
+                expenses = expenses.Where(x => x.IsPaidFor).ToList();
+            }
+            if (filters.Contains(ExpenseFilters.UnpaidExpensesOnly))
+            {
+                expenses = expenses.Where(x => !x.IsPaidFor).ToList();
+            }
+
+            var ids = expenses.Select(x => x.Id).ToList();
+
+            return ids;
+        }
+
         public async Task<List<ExpenseModel>> GetExpensesByFixtureIdAsync(int? budgetFixtureId)
         {
             _db ??= await _dbService.GetConnectionAsync();

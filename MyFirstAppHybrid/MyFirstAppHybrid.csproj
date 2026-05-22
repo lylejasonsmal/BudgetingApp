@@ -57,6 +57,14 @@
 		<Copy SourceFiles="@(ScopedCssBundles)" DestinationFolder="$(MSBuildProjectDirectory)\wwwroot\css" SkipUnchangedFiles="true" />
 	</Target>
 
+	<ItemGroup>
+	  <MauiImage Include="wwwroot\confetti.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\confetti.png" />
+	</ItemGroup>
+
 	<!-- NuGet packages -->
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />

@@ -104,7 +104,6 @@ body {
     color: var(--primary-font-color);
     font-size: var(--base-font-size);
     width: 100vw;
-    transition: 0.3s;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -116,6 +115,13 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: flex-start;
     align-items: center;
     font-size-adjust: 0.4;
+}
+
+.large-text {
+    font-size-adjust: 1.5;
+    line-height: 75px;
+    width: 100%;
+    text-wrap: wrap;
 }
 
 .page {
@@ -215,6 +221,9 @@ textarea:focus {
 
 button {
     all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--primary-button-border);
     background: var(--primary-button-background);
     padding: 10px;
@@ -222,7 +231,6 @@ button {
     font-weight: bolder;
     border-radius: 100px;
     min-width: 75px;
-    text-align: center;
     margin: 5px;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -357,6 +365,7 @@ button:active {
     border: 1px solid lightgreen;
     width: 300px;
     padding: 10px;
+    padding-right: 20px;
     border-radius: 10px;
     animation: moveDown 0.1s ease-in, moveUp 0.5s ease-in 4.5s forwards;
     font-weight: bolder;

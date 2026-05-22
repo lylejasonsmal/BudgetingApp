@@ -5,8 +5,11 @@
     align-items: center;
     position: fixed;
     top: 0;
-    width: 100vw;
-    height: 100vh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100vh !important;
     backdrop-filter: blur(5px);
     z-index: 2000;
 }
