@@ -3,11 +3,10 @@
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 @inject ExpenseRepository ExpenseRepository
 
-@if (_budgetFixture is not null)
-{
-    <CardWrapperComponent HeaderText="@DateTime.Today.ToString("MMMM")" IconName="edit" Link="/statistics-dashboard" IsLargeText="true" OnIconClick="OpenPopupAsync">
-        <div class="card-body">
-            
+<CardWrapperComponent HeaderText="@DateTime.Today.ToString("MMMM")" IconName="edit" IsLargeText="true" OnIconClick="OpenPopupAsync">
+    <div class="card-body">
+        @if (_budgetFixture is not null)
+        {
             <h6>Summary</h6>
             <div class="info-card">
                 <p class="secondary-text">Net Salary</p>
@@ -28,12 +27,12 @@
                 <p class="secondary-text">Amount Left Over</p>
                 <h1>R@_budgetFixture.LeftOverAmount</h1>
             </div>
-            
+
             @if (_budgetFixture.NumberOfExpenses > 0)
             {
                 <h6>Insights</h6>
                 <div class="info-card">
-                    <MaterialDesignIconComponent IconName="analytics" />
+                    <MaterialDesignIconComponent IconName="analytics"/>
                     <p>
                         This is where your budget insights will go
                     </p>
@@ -55,16 +54,21 @@
                     </p>
                 </div>
             }
-        </div>
-    </CardWrapperComponent>
+        }
+        else
+        {
+            <div>
+                <MaterialDesignIconComponent IconName="account_balance_wallet"/>
+                <h1 class="large-text">Get Started</h1>
+                <p class="secondary-text">Get your budgeting journey started by setting your account with the necessary details.</p>
+                <button @onclick="OpenPopupAsync">Setup Budget</button>
+            </div>
+        }
+    </div>
+</CardWrapperComponent>
 
     <EditBudgetFixtureComponent @bind-Visible="_showPopup"/>
-}
-else
-{
-    <CardWrapperComponent IsLoading="true">
-    </CardWrapperComponent>
-}
+
 
 @code {
     private MonthlyBudgetFixtureModel? _budgetFixture;
@@ -77,6 +81,7 @@ else
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixture = model;
+            if (_budgetFixture is null) return;
             _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(model.Id);
             _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(model.Id);
             await InvokeAsync(StateHasChanged);

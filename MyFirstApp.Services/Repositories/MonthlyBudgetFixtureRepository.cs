@@ -50,18 +50,16 @@ namespace MyFirstApp.Services.Repositories
 
             return fixture?.Id;
         }
-
-        //TODO: Move to the service
-        //public async Task AddAsync(MonthlyBudgetFixtureModel budget)
-        //{
-        //    _db ??= await _dbService.GetConnectionAsync();
-        //    await _db.InsertAsync(budget);
-        //}
+        public async Task AddAsync(MonthlyBudgetFixtureModel budget)
+        {
+            _db ??= await _dbService.GetConnectionAsync();
+            await _db.InsertAsync(budget);
+        }
 
         public async Task<MonthlyBudgetFixtureModel?> UpdateAsync(MonthlyBudgetFixtureModel budgetFixture)
         {
             _db ??= await _dbService.GetConnectionAsync();
-            var updatedBudgetFixtureId = await _db.UpdateAsync(budgetFixture);
+            var updatedBudgetFixtureId = await _db.InsertOrReplaceAsync(budgetFixture);
             return await GetByIdAsync(updatedBudgetFixtureId);
         }
 

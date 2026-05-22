@@ -2,7 +2,7 @@
 @inject IJSRuntime JS
 @inject IToastService ToastService
 
-<CardWrapperComponent HeaderText="App Settings" IconName="settings">
+<CardWrapperComponent HeaderText="App Settings" IsLargeText="true" IconName="settings">
     <div class="card-body">
         <div class="info-card">
             <h6>@(_isDarkMode ? "Dark Mode" : "Light Mode")</h6>

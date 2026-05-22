@@ -5,7 +5,7 @@
 
 @if (_user is not null)
 {
-    <CardWrapperComponent HeaderText="Your Profile" IconName="edit" OnIconClick="OpenPopupAsync">
+    <CardWrapperComponent HeaderText="Your Profile" IsLargeText="true" IconName="edit" OnIconClick="OpenPopupAsync">
         <div class="main-user-card">
         @if (_user.ProfileImage is null)
         {
