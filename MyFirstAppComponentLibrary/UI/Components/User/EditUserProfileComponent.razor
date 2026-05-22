@@ -3,6 +3,15 @@
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Your Profile">
     
+    @foreach (var error in _errors)
+    {
+        <div class="info-card error error-message">
+            <h4>Error</h4>
+            <p>@error</p>
+        </div>
+    }
+
+
     @if (_profileImageSrc is null)
     {
         <div class="image-placeholder">
@@ -14,7 +23,10 @@
         <div class="image-placeholder">
             <img src="@_profileImageSrc" />
         </div>
-        <button class="error" @onclick="RemoveImageAsync">Remove Image</button>
+        <button class="error" @onclick="RemoveImageAsync">
+            <MaterialDesignIconComponent IconName="delete" />
+            Remove Image
+        </button>
     }
 
     <div>
@@ -61,6 +73,8 @@
     private string? _profileImageSrc;
     private UserModel _user;
 
+    private IReadOnlyList<string> _errors = [];
+
     protected override async Task OnParametersSetAsync()
     {
         _user = new UserModel
@@ -81,7 +95,7 @@
         {
             _profileImageSrc = null;
         }
-        
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -104,17 +118,26 @@
     private async Task CancelAsync()
     {
         _user = new UserModel();
+        _errors = new List<string>();
         await VisibleChanged.InvokeAsync(false);
     }
 
     private async Task UpdateAsync()
     {
+        if (_user.Validate() is var validationErrors && validationErrors.Count > 0)
+        {
+            _errors = validationErrors;
+            await InvokeAsync(StateHasChanged);
+            return;
+
+        }
         var result = await UserService.UpdateUserAsync(_user);
 
         if (result.Successful)
         {
             await VisibleChanged.InvokeAsync(false);
             await ToastService.ShowSuccessToastAsync($"Successfully updated your profile, {_user.FirstName}!");
+            _errors = new List<string>();
         }
     }
 

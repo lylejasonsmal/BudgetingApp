@@ -1,0 +1,7 @@
+.birthday-confetti {
+    background-image: url("/confetti.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}

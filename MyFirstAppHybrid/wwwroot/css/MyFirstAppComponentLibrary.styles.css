@@ -97,8 +97,11 @@ img[b-w5s0bmlqnv] {
     align-items: center;
     position: fixed;
     top: 0;
-    width: 100vw;
-    height: 100vh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100vh !important;
     backdrop-filter: blur(5px);
     z-index: 2000;
 }
@@ -162,6 +165,24 @@ img[b-w5s0bmlqnv] {
 .danger[b-133hntvjuu] {
     background-color: crimson;
 }
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/ToastComponent.razor.rz.scp.css */
+.toast-queue-count[b-k104fnzpt2] {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: var(--primary-expense-background);
+    color: var(--primary-font-color);
+    transition: opacity ease-in-out 0.5s;
+    border-radius: 100%;
+    width: 40px;
+    aspect-ratio: 1/1;
+    border: 1px solid var(--primary-button-border);
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpenseComponent.razor.rz.scp.css */
 .main-body[b-ohjxmp6wew] {
     display: flex;
@@ -183,6 +204,10 @@ img[b-w5s0bmlqnv] {
     align-items: stretch;
     gap: 10px;
     padding: 0px;
+}
+
+.paid-container[b-ohjxmp6wew]{
+    height: 100%;
 }
 
 /* _content/MyFirstAppComponentLibrary/UI/Components/HeaderBarComponent.razor.rz.scp.css */
@@ -322,6 +347,14 @@ img[b-te5u6a20mt] {
     justify-content: center;
     align-items: center;
 }
+/* _content/MyFirstAppComponentLibrary/UI/Components/User/HappyBirthdayComponent.razor.rz.scp.css */
+.birthday-confetti[b-1ld5j9hr5v] {
+    background-image: url("/confetti.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/User/UserProfileComponent.razor.rz.scp.css */
 .image-placeholder[b-6crowhzq3g] {
     aspect-ratio: 1/1;
@@ -379,4 +412,22 @@ img[b-6crowhzq3g] {
     padding: 10px;
     gap: 10px;
     text-align: left;
+}
+
+.expenses-container[b-8dz0qa7pat] {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .expenses-container[b-8dz0qa7pat] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1080px) {
+    .expenses-container[b-8dz0qa7pat] {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

@@ -1,0 +1,17 @@
+.toast-queue-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: var(--primary-expense-background);
+    color: var(--primary-font-color);
+    transition: opacity ease-in-out 0.5s;
+    border-radius: 100%;
+    width: 40px;
+    aspect-ratio: 1/1;
+    border: 1px solid var(--primary-button-border);
+}

@@ -3,11 +3,11 @@
 </div>
 
 @code {
-    [Parameter] public required int Total { get; set; }
-    [Parameter] public required int Progress { get; set; }
+    [Parameter] public required double Total { get; set; }
+    [Parameter] public required double Progress { get; set; }
     [Parameter] public required bool IsDanger { get; set; } = false;
 
-    private int? ProgressPercentage => Total == 0
+    private double? ProgressPercentage => Total == 0
         ? 0
         : (Progress * 100) / Total;
 }

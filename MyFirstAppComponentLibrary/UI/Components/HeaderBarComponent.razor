@@ -1,10 +1,12 @@
-﻿@inject IUserService UserService
+﻿@using MyFirstAppComponentLibrary.UI.Components.User
+@inject IToastService ToastService
+@inject IUserService UserService
 @inject UserRepository UserRepository
 @inject NavigationManager NavigationManager
 @namespace MyFirstAppComponentLibrary.UI.Components
 
 <div class="header-bar">
-        <MaterialDesignIconComponent IconName="savings"/>
+    <MaterialDesignIconComponent IconName="savings"/>
     @if (_user is not null)
     {
         <div class="user-container" @onclick="GoToProfile">
@@ -26,10 +28,12 @@
         </div>
     }
 </div>
+<HappyBirthdayComponent @bind-Visible="_isUserBirthdayToday"/>
 
 @code {
     private UserModel? _user;
     private string? _profileImageSrc;
+    private bool _isUserBirthdayToday;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -47,6 +51,12 @@
                 _profileImageSrc = null;
             }
 
+            if (_user.Birthday is not null &&
+                _user.Birthday.Value.Month == DateTime.Today.Month &&
+                _user.Birthday.Value.Day == DateTime.Today.Day)
+            {
+                _isUserBirthdayToday = true;
+            }
             await InvokeAsync(StateHasChanged);
         });
 
@@ -56,6 +66,14 @@
         {
             _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
         }
+
+        if (_user?.Birthday is not null &&
+            _user.Birthday.Value.Month == DateTime.Today.Month &&
+            _user.Birthday.Value.Day == DateTime.Today.Day)
+        {
+            _isUserBirthdayToday = true;
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 

@@ -1,34 +1,78 @@
 ﻿@inject IToastService ToastService
 
-@if (_showToast)
+@if (_showToast && _currentToast is not null)
 {
-    <div class="app-toast @(_isSuccess ? "" : "error-app-toast")">
-        <MaterialDesignIconComponent IconName="@(_isSuccess ? "check_small" : "error")" />
+
+    <div class="app-toast @(_currentToast.Type == ToastType.Success ? "" : "error-app-toast")">
+        <MaterialDesignIconComponent IconName="@(_currentToast.Type == ToastType.Success ? "check_small" : "error")" />
         <p>
-            @_message
+            @_currentToast.Message
         </p>
+        
+        @if (_toastQueue.Count > 0)
+        {
+            <strong class="toast-queue-count">@_toastQueue.Count</strong>
+        }
     </div>
 }
 
 @code {
     private bool _showToast;
-    private bool _isSuccess;
-    private string? _message;
+    private Toast? _currentToast;
+
+    private readonly Queue<Toast> _toastQueue = new();
+    private bool _isProcessing;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(!firstRender) return;
+        if (!firstRender) return;
 
         await ToastService.SubscribeAsync(async result =>
         {
-            _isSuccess = result.Successful;
-            _message = result.Message?? "No message";
-            _showToast = true;
-            await InvokeAsync(StateHasChanged);
-            await Task.Delay(5000);
-            _showToast = false;
-            await InvokeAsync(StateHasChanged);
+            var toast = new Toast(
+                Message: result.Message ?? "No message",
+                Type: result.Successful ? ToastType.Success : ToastType.Error
+            );
+
+            _toastQueue.Enqueue(toast);
+
+            _ = ProcessQueueAsync();
         });
     }
 
+    private async Task ProcessQueueAsync()
+    {
+        if (_isProcessing)
+        {
+            //Refreshes toast count
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        _isProcessing = true;
+
+        while (_toastQueue.Count > 0)
+        {
+            _currentToast = _toastQueue.Dequeue();
+
+            _showToast = true;
+
+            await InvokeAsync(StateHasChanged);
+
+            await Task.Delay(5000);
+
+            _showToast = false;
+            await InvokeAsync(StateHasChanged);
+        }
+
+        _isProcessing = false;
+    }
+
+    public record Toast(string Message, ToastType Type);
+
+    public enum ToastType
+    {
+        Success,
+        Error
+    }
 }

@@ -1,5 +1,6 @@
 ﻿@inject IToastService ToastService
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject MonthlyBudgetFixtureRepository MonthlyBudgetFixtureRepository
 
 <PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Current Budget Fixture">
     
@@ -26,8 +27,25 @@
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
 
+    private MonthlyBudgetFixtureModel? _budgetFixture;
+
     private double _netSalary;
     private IList<string> _errors = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _budgetFixture = model;
+            _netSalary = _budgetFixture.StoredNetSalary ?? 0;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        _budgetFixture = await MonthlyBudgetFixtureRepository.GetByIdAsync(1);
+        _netSalary = _budgetFixture.StoredNetSalary ?? 0;
+        await InvokeAsync(StateHasChanged);
+    }
 
     private async Task CancelAsync()
     {
