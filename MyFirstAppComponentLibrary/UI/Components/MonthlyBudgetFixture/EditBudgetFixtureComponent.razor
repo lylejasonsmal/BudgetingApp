@@ -14,7 +14,7 @@
 
     <div>
         <h6>Net Salary</h6>
-        <input placeholder="What is your salary after deductions?" @bind="_netSalary"/>
+        <input placeholder="What is your salary after deductions?" @bind="_budgetFixture!.StoredNetSalary"/>
     </div>
 
     <div class="popup-actions">
@@ -29,21 +29,23 @@
 
     private MonthlyBudgetFixtureModel? _budgetFixture;
 
-    private double _netSalary;
     private IList<string> _errors = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixture = model;
-            _netSalary = _budgetFixture.StoredNetSalary ?? 0;
             await InvokeAsync(StateHasChanged);
         });
 
-        _budgetFixture = await MonthlyBudgetFixtureRepository.GetByIdAsync(1);
-        _netSalary = _budgetFixture.StoredNetSalary ?? 0;
+        _budgetFixture ??= new MonthlyBudgetFixtureModel()
+        {
+            Id = 1,
+            CurrentlyInUse = true
+        };
         await InvokeAsync(StateHasChanged);
     }
 
@@ -55,7 +57,7 @@
 
     private async Task UpdateAsync()
     {
-        var result = await MonthlyBudgetFixtureService.TryUpdateBudget(_netSalary);
+        var result = await MonthlyBudgetFixtureService.TryUpdateBudget(_budgetFixture);
         if (result.Successful)
         {
             _errors = [];

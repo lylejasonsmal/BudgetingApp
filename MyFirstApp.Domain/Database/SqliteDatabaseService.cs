@@ -34,32 +34,6 @@ public class SqliteDatabaseService
 
     private async Task SeedDatabaseAsync(SQLiteAsyncConnection dbConnection)
     {
-        var existingFixture = await dbConnection.Table<MonthlyBudgetFixtureModel>()
-                                      .Where(f => f.Month == "January" && f.Year == "2026")
-                                      .FirstOrDefaultAsync();
-
-        int fixtureId;
-
-        if (existingFixture == null)
-        {
-            var fixture = new MonthlyBudgetFixtureModel
-            {
-                Month = "January",
-                Year = "2026",
-                NumberOfExpenses = 5,
-                StoredNetSalary = 25000,
-                BudgetedForAmount = 18000,
-                LeftOverAmount = 7000,
-                CurrentlyInUse = true
-            };
-
-            fixtureId = await dbConnection.InsertAsync(fixture);
-        }
-        else
-        {
-            fixtureId = existingFixture.Id;
-        }
-
         var existingUsers = await dbConnection.Table<UserModel>()
             .ToListAsync();
 

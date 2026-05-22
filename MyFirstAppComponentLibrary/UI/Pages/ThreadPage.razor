@@ -7,21 +7,16 @@
 
 <div class="page">
     <BudgetFixtureComponent />
-    
 
-    <button class="floating-button" @onclick="OpenAddExpensePopup">
-        <MaterialDesignIconComponent IconName="add" />
-    </button>
-
+    <CardWrapperComponent HeaderText="Expenses" IsLargeText="true">
     @if (_expenseIds is not null && _expenseIds.Count > 0)
     {
-        <CardWrapperComponent HeaderText="Expenses" IsLargeText="true">
             <div class="expenses-container">
                 <div class="info-card">
                     Filter & sort by your preferences:
                     <button class="secondary-button" @onclick="OpenFilterPanelAsync">
                         <MaterialDesignIconComponent IconName="tune"/>
-                        <strong>@_appliedFilters.Count filter(s) applied</strong>
+                        @_appliedFilters.Count Applied
                     </button>
                 </div>
 
@@ -30,35 +25,42 @@
                     <ExpenseComponent @key="expenseId" Id="@expenseId"/>
                 }
             </div>
-        </CardWrapperComponent>
+
+        <button class="floating-button" @onclick="OpenAddExpensePopup">
+            <MaterialDesignIconComponent IconName="add" />
+        </button>
     }
     else
     {
-        
-        <CardWrapperComponent HeaderText="Expenses" IsLargeText="true">
-        <div id="expenses" class="no-expenses-container">
-            <MaterialDesignIconComponent IconName="wallet"/>
-            <h1>Hey There!</h1>
-            <p class="secondary-text">I notice you currently have no expenses listed. Get started with your budgeting journey today! Add your first expense and take control of your finances.</p>
-            <button @onclick="OpenAddExpensePopup">Add Expense</button>
-            @if (_appliedFilters.Count > 0)
-            {
-                <button class="secondary-button" @onclick="OpenFilterPanelAsync">
-                    <MaterialDesignIconComponent IconName="tune"/>
-                    <strong>@_appliedFilters.Count filter(s) applied</strong>
-                </button>
-            }
+        <div class="card-body">
+            <div>
+                <MaterialDesignIconComponent IconName="wallet"/>
+                <h1 class="large-text">
+                    Start Tracking Your Spending
+                </h1>
+                <p class="secondary-text">I notice you currently have no expenses listed. Get started with your budgeting journey today! Add your first expense and take control of your finances.</p>
+                <button @onclick="OpenAddExpensePopup">Add Expense</button>
+                @if (_appliedFilters.Count > 0)
+                {
+                    <button class="secondary-button" @onclick="OpenFilterPanelAsync">
+                        <MaterialDesignIconComponent IconName="tune"/>
+                       @_appliedFilters.Count Applied
+                    </button>
+                }
+            </div>
         </div>
-        </CardWrapperComponent>
     }
+    </CardWrapperComponent>
     
     
     <CardWrapperComponent HeaderText="Savings" IsLargeText="true">
-        <div id="savings" class="no-savings-container">
-            <MaterialDesignIconComponent IconName="savings"/>
-            <h1>Start Saving!</h1>
-            <p class="secondary-text">Add a savings pocket and work towards your dreams!</p>
-            <button @onclick="OpenAddSavingsPocketPopup">Add Savings Pocket</button>
+        <div class="card-body">
+            <div>
+                <MaterialDesignIconComponent IconName="savings"/>
+                <h1 class="large-text">Start Saving</h1>
+                <p class="secondary-text">Add a savings pocket and work towards your dreams!</p>
+                <button @onclick="OpenAddSavingsPocketPopup">Add Savings Pocket</button>
+            </div>
         </div>
     </CardWrapperComponent>
     <AddExpensePopupComponent @bind-Visible="_showPopup"/>
@@ -120,7 +122,8 @@
 
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
-            _budgetFixtureModel = model;
+            _budgetFixtureModel = model; 
+            if (_budgetFixtureModel is null) return;
             _expenseIds = await ExpenseRepository.ApplyFiltersAsync(model.Id, _appliedFilters);
 
             await InvokeAsync(StateHasChanged);

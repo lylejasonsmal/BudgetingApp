@@ -85,28 +85,37 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
             await PublishAsync(updatedBudgetFixture ?? throw new InvalidOperationException("Updated budget fixture is null"));
         }
 
-        public async Task<Result> TryUpdateBudget(double netSalary)
+        public async Task<Result> TryUpdateBudget(MonthlyBudgetFixtureModel updatedBudgetFixtureModel)
         {
             var resultBuilder = Result.Builder();
 
             var currentMonthlyBudgetFixture = await GetCurrentFixtureAsync();
 
-            if (netSalary < currentMonthlyBudgetFixture.BudgetedForAmount)
+            if (currentMonthlyBudgetFixture is null)
             {
-                resultBuilder.WithError("The net salary you've inputted is below your budgeted for amount. Please update your expenses before proceeding.");
+                await _monthlyBudgetFixtureRepository.UpdateAsync(updatedBudgetFixtureModel);
+                await RecalculateAndUpdateBudgetFixtureAsync();
             }
             else
             {
-                currentMonthlyBudgetFixture.StoredNetSalary = netSalary;
-                await _monthlyBudgetFixtureRepository.UpdateAsync(currentMonthlyBudgetFixture);
-                await RecalculateAndUpdateBudgetFixtureAsync();
+                if (updatedBudgetFixtureModel.StoredNetSalary < currentMonthlyBudgetFixture?.BudgetedForAmount)
+                {
+                    resultBuilder.WithError("The net salary you've inputted is below your budgeted for amount. Please update your expenses before proceeding.");
+                }
+                else
+                {
+                    currentMonthlyBudgetFixture.StoredNetSalary = updatedBudgetFixtureModel.StoredNetSalary;
+                    await _monthlyBudgetFixtureRepository.UpdateAsync(currentMonthlyBudgetFixture);
+                    await RecalculateAndUpdateBudgetFixtureAsync();
+                }
             }
+
 
             return resultBuilder.Create();
         }
 
 
-        private async Task<MonthlyBudgetFixtureModel> GetCurrentFixtureAsync()
+        private async Task<MonthlyBudgetFixtureModel?> GetCurrentFixtureAsync()
         {
             var currentId = await _monthlyBudgetFixtureRepository.GetCurrentFixtureIdAsync();
 
@@ -116,7 +125,7 @@ namespace MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService
                 if (fixture != null) return fixture;
             }
 
-            return new MonthlyBudgetFixtureModel();
+            return null;
         }
     }
 }
