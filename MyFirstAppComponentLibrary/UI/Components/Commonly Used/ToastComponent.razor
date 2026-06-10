@@ -29,6 +29,7 @@
 
         await ToastService.SubscribeAsync(async result =>
         {
+            if (_toastQueue.Count >= 3) return;
             var toast = new Toast(
                 Message: result.Message ?? "No message",
                 Type: result.Successful ? ToastType.Success : ToastType.Error

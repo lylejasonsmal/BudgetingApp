@@ -1,35 +1,34 @@
-﻿@using MyFirstAppComponentLibrary.UI.Components.User
-@namespace MyFirstAppComponentLibrary.UI.Components
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject UserRepository UserRepository
 @inject IUserService UserService
 
-@if (_user is not null)
-{
-    <CardWrapperComponent HeaderText="Your Profile" IsLargeText="true" IconName="edit" OnIconClick="OpenPopupAsync">
+<CardWrapperComponent HeaderText="Your Profile" IsLargeText="true" IconName="edit" OnIconClick="OpenPopupAsync">
+    @if (_user is not null)
+    {
         <div class="main-user-card">
-        @if (_user.ProfileImage is null)
-        {
-            <div class="image-placeholder">
-                <MaterialDesignIconComponent IconName="person"/>
-            </div>
-        }
-        else
-        {
-            <div class="image-placeholder">
-                <img src="@_profileImageSrc" @onclick="OpenImageFullscreen" />
-            </div>
-        }
+            @if (_user.ProfileImage is null)
+            {
+                <div class="image-placeholder">
+                    <MaterialDesignIconComponent IconName="person"/>
+                </div>
+            }
+            else
+            {
+                <div class="image-placeholder">
+                    <img src="@_profileImageSrc" @onclick="OpenImageFullscreen"/>
+                </div>
+            }
 
-        <div class="card-body">
-            <h4>
-                @_user.Username
-            </h4>
-            <p class="secondary-text">
-                @_user.FirstName @_user.LastName
-            </p>
+            <div class="card-body">
+                <h4>
+                    @_user.Username
+                </h4>
+                <p class="secondary-text">
+                    @_user.FirstName @_user.LastName
+                </p>
+            </div>
         </div>
-        </div>
-        
+
         @if (_user.Birthday is not null)
         {
             <div class="card-body">
@@ -39,7 +38,7 @@
                 </p>
             </div>
         }
-        
+
         @if (!string.IsNullOrWhiteSpace(_user.Description))
         {
             <div class="card-body">
@@ -50,14 +49,17 @@
                 </p>
             </div>
         }
-    </CardWrapperComponent>
-    
-    <ImagePopupComponent @bind-Visible="_showImageFullscreen" ImageBytes="@_profileImageSrc" />
-    <EditUserProfileComponent @bind-Visible="_showPopup" User="_user"/>
-}
-else
+    }
+    else
+    {
+        <SpinnerComponent/>
+    }
+</CardWrapperComponent>
+
+@if (_user is not null)
 {
-    <CardWrapperComponent IsLoading="true"></CardWrapperComponent>
+    <ImagePopupComponent @bind-Visible="_showImageFullscreen" ImageBytes="@_profileImageSrc"/>
+    <EditUserProfileComponent @bind-Visible="_showPopup" User="_user"/>
 }
 
 @code {
@@ -73,22 +75,21 @@ else
         await UserService.SubscribeAsync(async model =>
         {
             _user = model;
-            if(_user.ProfileImage != null)
-            {
-                _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
-            }
-            await InvokeAsync(StateHasChanged);
+            await ConvertUserImage();
         });
 
         _user = await UserRepository.GetByIdAsync(1);
+        await ConvertUserImage();
+    }
 
-        if(_user.ProfileImage != null)
+    private async Task ConvertUserImage()
+    {
+        if(_user!.ProfileImage != null)
         {
             _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
         }
         await InvokeAsync(StateHasChanged);
     }
-    
     private void OpenPopupAsync()
     {
         _showPopup = true;

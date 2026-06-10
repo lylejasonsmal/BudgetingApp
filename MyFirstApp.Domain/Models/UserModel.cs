@@ -36,5 +36,10 @@ namespace MyFirstApp.Domain.Models
 
             return validationErrors.AsReadOnly();
         }
+
+        public string ToFullName()
+        {
+            return FirstName + " " + LastName;
+        }
     }
 }

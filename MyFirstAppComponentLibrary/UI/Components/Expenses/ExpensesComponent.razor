@@ -1,0 +1,184 @@
+﻿@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject IToastService ToastService
+
+<CardWrapperComponent HeaderText="Expenses" IsLargeText="true">
+    @if (_expenseIds is not null && _expenseIds.Count > 0)
+    {
+        <div class="expenses-container">
+            <div class="info-card">
+                Filter & sort by your preferences:
+                <button class="secondary-button" @onclick="OpenFilterPanelAsync">
+                    <MaterialDesignIconComponent IconName="tune"/>
+                    @_appliedFilters.Count Applied
+                </button>
+            </div>
+
+            @foreach (var expenseId in _expenseIds)
+            {
+                <ExpenseComponent @key="expenseId" Id="@expenseId"/>
+            }
+        </div>
+
+        <button class="floating-button" @onclick="OpenAddExpensePopup">
+            <MaterialDesignIconComponent IconName="add" />
+        </button>
+    }
+    else
+    {
+        <div class="card-body">
+            <div>
+                <MaterialDesignIconComponent IconName="wallet"/>
+                <h1 class="large-text">
+                    Start Tracking Your Spending
+                </h1>
+                <p class="secondary-text">I notice you currently have no expenses listed. Get started with your budgeting journey today! Add your first expense and take control of your finances.</p>
+                <button @onclick="OpenAddExpensePopup">Add Expense</button>
+                @if (_appliedFilters.Count > 0)
+                {
+                    <button class="secondary-button" @onclick="OpenFilterPanelAsync">
+                        <MaterialDesignIconComponent IconName="tune"/>
+                        @_appliedFilters.Count Applied
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</CardWrapperComponent>
+<AddExpensePopupComponent @bind-Visible="_showPopup" />
+
+
+<PopupWrapperComponent @bind-Visible="_openFiltersPanel" HeaderText="Filter Your Expenses">
+    <h1>
+        Apply Filters
+    </h1>
+    <p class="caption">Improve your user experience</p>
+    
+    <div class="popup-actions">
+        <button @onclick="ApplyFiltersAsync">
+            Apply Filters
+            <MaterialDesignIconComponent IconName="done_all" />
+        </button>
+        @if (_appliedFilters.Count > 0)
+        {
+            <button class="error" @onclick="ClearFiltersAsync">
+                Clear
+                <MaterialDesignIconComponent IconName="clear" />
+            </button>
+        }
+    </div>
+
+    <p>Sort by:</p>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesFirst) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesFirst)">
+        Paid Expenses (Ascending)
+    </button>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesLast) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesLast)">
+        Paid Expenses (Descending)
+    </button>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.AlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.AlphabeticalOrder)">
+        Alphabetical Order (A - Z)
+    </button>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.ReverseAlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.ReverseAlphabeticalOrder)">
+        Reverse Alphabetical Order (Z - A)
+    </button>
+
+    <p>Filter by:</p>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesOnly)">
+        Paid Expenses Only
+    </button>
+    <button class="@(_appliedFilters.Contains(ExpenseFilter.UnpaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.UnpaidExpensesOnly)">
+        Unpaid Expenses Only
+    </button>
+</PopupWrapperComponent>
+
+@code {
+    private IReadOnlyList<int>? _expenseIds;
+    private bool _showPopup;
+    private bool _openFiltersPanel;
+    private MonthlyBudgetFixtureModel? _budgetFixtureModel;
+    private readonly IList<ExpenseFilter> _appliedFilters = new List<ExpenseFilter>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _budgetFixtureModel = model;
+            if (_budgetFixtureModel is null) return;
+            await LoadExpensesAsync();
+        });
+
+        _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
+        await LoadExpensesAsync();
+    }
+
+    private async Task LoadExpensesAsync()
+    {
+        _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel!.Id, _appliedFilters);
+        await InvokeAsync(StateHasChanged);
+    }
+    private void OpenAddExpensePopup()
+    {
+        _showPopup = true;
+    }
+
+    private async Task OpenFilterPanelAsync()
+    {
+        _openFiltersPanel = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ApplyFiltersAsync()
+    {
+        _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel?.Id, _appliedFilters);
+        _openFiltersPanel = false;
+        await ToastService.ShowSuccessToastAsync($"{_appliedFilters.Count} filter(s) applied.");
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ClearFiltersAsync()
+    {
+        _appliedFilters.Clear();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ToggleFilterAsync(ExpenseFilter filter)
+    {
+        if (_appliedFilters.Contains(filter))
+        {
+            _appliedFilters.Remove(filter);
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        if (_appliedFilters.Contains(ExpenseFilter.PaidExpensesFirst) && filter == ExpenseFilter.PaidExpensesLast)
+        {
+            _appliedFilters.Remove(ExpenseFilter.PaidExpensesFirst);
+        }
+        if (_appliedFilters.Contains(ExpenseFilter.PaidExpensesLast) && filter == ExpenseFilter.PaidExpensesFirst)
+        {
+            _appliedFilters.Remove(ExpenseFilter.PaidExpensesLast);
+        }
+        if (_appliedFilters.Contains(ExpenseFilter.PaidExpensesOnly) && filter == ExpenseFilter.UnpaidExpensesOnly)
+        {
+            _appliedFilters.Remove(ExpenseFilter.PaidExpensesOnly);
+        }
+        if (_appliedFilters.Contains(ExpenseFilter.UnpaidExpensesOnly) && filter == ExpenseFilter.PaidExpensesOnly)
+        {
+            _appliedFilters.Remove(ExpenseFilter.UnpaidExpensesOnly);
+        }
+        if (_appliedFilters.Contains(ExpenseFilter.ReverseAlphabeticalOrder) && filter == ExpenseFilter.AlphabeticalOrder)
+        {
+            _appliedFilters.Remove(ExpenseFilter.ReverseAlphabeticalOrder);
+        }
+        if (_appliedFilters.Contains(ExpenseFilter.AlphabeticalOrder) && filter == ExpenseFilter.ReverseAlphabeticalOrder)
+        {
+            _appliedFilters.Remove(ExpenseFilter.AlphabeticalOrder);
+        }
+
+        _appliedFilters.Add(filter);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

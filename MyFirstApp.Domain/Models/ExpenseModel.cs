@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using MyFirstApp.Domain.Enums;
+using SQLite;
 
 namespace MyFirstApp.Domain.Models
 {
@@ -13,6 +14,7 @@ namespace MyFirstApp.Domain.Models
         public bool IsARecurringExpense { get; set; }
         public int MonthlyBudgetFixtureId { get; set; }
         public string? Notes { get; set; }
+        public ExpenseCategory ExpenseCategory { get; set; }
 
         public bool TryValidate(out string? error)
         {

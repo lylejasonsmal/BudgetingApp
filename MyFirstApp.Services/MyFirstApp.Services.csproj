@@ -4,7 +4,12 @@
 		<TargetFrameworks>net9.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<UseMauiEssentials>true</UseMauiEssentials>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\MyFirstApp.Domain\MyFirstApp.Domain.csproj" />

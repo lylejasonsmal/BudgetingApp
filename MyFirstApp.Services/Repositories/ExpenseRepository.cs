@@ -29,19 +29,7 @@ namespace MyFirstApp.Services.Repositories
             }
         }
 
-        public async Task<List<int>> GetExpenseIdsByFixtureIdAsync(int? budgetFixtureId)
-        {
-            _db ??= await _dbService.GetConnectionAsync();
-            var expenses = await _db.Table<ExpenseModel>()
-                .Where(x => x.MonthlyBudgetFixtureId == budgetFixtureId)
-                .ToListAsync();
-
-            var ids = expenses.Select(x => x.Id).ToList(); 
-
-            return ids;
-        }
-
-        public async Task<List<int>> ApplyFiltersAsync(int? budgetFixtureId, IList<ExpenseFilters> filters)
+        public async Task<List<int>> LoadExpensesWithFiltersAppliedAsync(int? budgetFixtureId, IList<ExpenseFilter> filters)
         {
             _db ??= await _dbService.GetConnectionAsync();
             var expenses = await _db.Table<ExpenseModel>()
@@ -49,28 +37,27 @@ namespace MyFirstApp.Services.Repositories
                 .ToListAsync();
 
 
-
-            if (filters.Contains(ExpenseFilters.AlphabeticalOrder))
+            if (filters.Contains(ExpenseFilter.AlphabeticalOrder))
             {
                 expenses = expenses.OrderBy(x => x.ExpenseName).ToList();
             }
-            if (filters.Contains(ExpenseFilters.ReverseAlphabeticalOrder))
+            if (filters.Contains(ExpenseFilter.ReverseAlphabeticalOrder))
             {
                 expenses = expenses.OrderByDescending(x => x.ExpenseName).ToList();
             }
-            if (filters.Contains(ExpenseFilters.PaidExpensesFirst))
+            if (filters.Contains(ExpenseFilter.PaidExpensesFirst))
             {
                 expenses = expenses.OrderByDescending(x => x.IsPaidFor).ToList();
             }
-            if (filters.Contains(ExpenseFilters.PaidExpensesLast))
+            if (filters.Contains(ExpenseFilter.PaidExpensesLast))
             {
                 expenses = expenses.OrderBy(x => x.IsPaidFor).ToList();
             }
-            if (filters.Contains(ExpenseFilters.PaidExpensesOnly))
+            if (filters.Contains(ExpenseFilter.PaidExpensesOnly))
             {
                 expenses = expenses.Where(x => x.IsPaidFor).ToList();
             }
-            if (filters.Contains(ExpenseFilters.UnpaidExpensesOnly))
+            if (filters.Contains(ExpenseFilter.UnpaidExpensesOnly))
             {
                 expenses = expenses.Where(x => !x.IsPaidFor).ToList();
             }
@@ -95,7 +82,7 @@ namespace MyFirstApp.Services.Repositories
             return await _db.FindAsync<ExpenseModel>(id);
         }
 
-        public async Task<int> GetPaidExpenseCount(int? budgetFixtureId)
+        public async Task<int> GetPaidExpenseCount(int budgetFixtureId)
         {
             _db ??= await _dbService.GetConnectionAsync();
             var paidExpenses = await _db.Table<ExpenseModel>()

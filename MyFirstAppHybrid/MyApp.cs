@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Networking;
 using MyFirstApp.Domain.Database;
+using MyFirstApp.Services.Implementations.ConnectivityService;
 using MyFirstApp.Services.Implementations.ExpenseService;
 using MyFirstApp.Services.Implementations.MonthlyBudgetFixtureService;
 using MyFirstApp.Services.Implementations.ToastService;
@@ -22,10 +24,13 @@ namespace MyFirstAppHybrid
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddBlazorBootstrap();
             builder.Services.AddSingleton<IMonthlyBudgetFixtureService, MonthlyBudgetFixtureService>();
             builder.Services.AddSingleton<IExpenseService, ExpenseService>();
             builder.Services.AddSingleton<IToastService, ToastService>();
             builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton(Connectivity.Current);
+            builder.Services.AddSingleton<IConnectivityService, ConnectivityService>();
             builder.Services.AddSingleton<SqliteDatabaseService>();
             builder.Services.AddSingleton<MonthlyBudgetFixtureRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();

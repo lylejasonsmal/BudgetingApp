@@ -1,12 +1,11 @@
-﻿@using MyFirstAppComponentLibrary.UI.Components.User
-@inject IToastService ToastService
+﻿@inject IToastService ToastService
 @inject IUserService UserService
+@inject IConnectivityService ConnectivityService
 @inject UserRepository UserRepository
 @inject NavigationManager NavigationManager
 @namespace MyFirstAppComponentLibrary.UI.Components
 
 <div class="header-bar">
-    <MaterialDesignIconComponent IconName="savings"/>
     @if (_user is not null)
     {
         <div class="user-container" @onclick="GoToProfile">
@@ -27,6 +26,9 @@
             <MaterialDesignIconComponent IconName="chevron_right"/>
         </div>
     }
+    <div>
+        <MaterialDesignIconComponent IconName="@(_isOnline ? "android_wifi_4_bar" : "android_wifi_4_bar_off")" />
+    </div>
 </div>
 <HappyBirthdayComponent @bind-Visible="_isUserBirthdayToday"/>
 
@@ -34,6 +36,7 @@
     private UserModel? _user;
     private string? _profileImageSrc;
     private bool _isUserBirthdayToday;
+    private bool _isOnline;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -59,6 +62,16 @@
             }
             await InvokeAsync(StateHasChanged);
         });
+
+        await ConnectivityService.SubscribeAsync(async connectivity =>
+        {
+            _isOnline = connectivity;
+            if (_isOnline) await ToastService.ShowSuccessToastAsync("Online");
+            if (!_isOnline) await ToastService.ShowFailureToastAsync("Your Internet Connection Is Lost");
+            await InvokeAsync(StateHasChanged);
+        });
+
+        _isOnline = await ConnectivityService.CheckConnectivityAsync();
 
         _user = await UserRepository.GetByIdAsync(1);
 

@@ -10,5 +10,6 @@ namespace MyFirstApp.Services.Interfaces
         Task<bool> CalculateIfExpensesAreWithinBudgetAsync(ExpenseModel expenseModel, ResultBuilder? resultBuilder);
         Task RecalculateAndUpdateBudgetFixtureAsync();
         Task<Result> TryUpdateBudget(MonthlyBudgetFixtureModel updateBudgetFixtureModel);
+        Task<MonthlyBudgetFixtureModel?> GetCurrentFixtureAsync();
     }
 }
