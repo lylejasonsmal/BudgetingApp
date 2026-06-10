@@ -1,6 +1,6 @@
 ﻿namespace MyFirstApp.Domain.Enums
 {
-    public enum ExpenseFilters
+    public enum ExpenseFilter
     {
         PaidExpensesFirst = 0,
         PaidExpensesLast = 1,

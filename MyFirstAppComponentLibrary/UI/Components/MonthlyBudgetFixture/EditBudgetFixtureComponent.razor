@@ -41,6 +41,7 @@
             await InvokeAsync(StateHasChanged);
         });
 
+        _budgetFixture = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
         _budgetFixture ??= new MonthlyBudgetFixtureModel()
         {
             Id = 1,

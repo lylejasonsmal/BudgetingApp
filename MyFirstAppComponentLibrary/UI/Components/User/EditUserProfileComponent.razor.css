@@ -1,6 +1,7 @@
 .image-placeholder {
     aspect-ratio: 1/1;
     width: 125px;
+    height: 125px;
     background: var(--primary-expense-background);
     color: var(--primary-button-foreground);
     border-radius: 10%;
@@ -14,6 +15,7 @@
 img {
     aspect-ratio: 1/1;
     width: 125px;
+    height: 125px;
     display: flex;
     flex-direction: column;
     justify-content: center;

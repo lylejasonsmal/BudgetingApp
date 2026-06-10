@@ -1,0 +1,20 @@
+﻿@inject IToastService ToastService
+
+<CardWrapperComponent HeaderText="Savings" IsLargeText="true">
+    <div class="card-body">
+        <div>
+            <MaterialDesignIconComponent IconName="savings"/>
+            <h1 class="large-text">Start Saving</h1>
+            <p class="secondary-text">Add a savings pocket and work towards your dreams!</p>
+            <button @onclick="OpenAddSavingsPocketPopup">Add Savings Pocket</button>
+        </div>
+    </div>
+</CardWrapperComponent>
+
+@code {
+    
+    private async Task OpenAddSavingsPocketPopup()
+    {
+        await ToastService.ShowFailureToastAsync("Not Supported Yet. Coming Soon!");
+    }
+}

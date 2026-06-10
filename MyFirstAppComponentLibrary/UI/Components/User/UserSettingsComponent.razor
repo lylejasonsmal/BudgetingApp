@@ -4,11 +4,12 @@
 
 <CardWrapperComponent HeaderText="App Settings" IsLargeText="true" IconName="settings">
     <div class="card-body">
+        <span class="secondary-text">Adjust To <strong>Your Preferences</strong></span>
         <div class="info-card">
             <h6>@(_isDarkMode ? "Dark Mode" : "Light Mode")</h6>
 
-            <button @onclick="ToggleThemeAsync">
-                <MaterialDesignIconComponent IconName="@(_isDarkMode ? "light_mode" : "dark_mode")" />
+            <button @onclick="ToggleThemeAsync" class="secondary-button">
+                <MaterialDesignIconComponent IconName="@(_isDarkMode ? "light_mode" : "dark_mode")"/>
             </button>
         </div>
 
@@ -23,22 +24,13 @@
                 {
                     @if (font != _fonts[_currentFontIndex])
                     {
-                        <button style="font-family: @font;" @onclick="() => SetCurrentFontAsync(font)">
+                        <button class="secondary-button" style="font-family: @font;" @onclick="() => SetCurrentFontAsync(font)">
                             @($"Switch To '{font}'")
                         </button>
                     }
                 }
             </div>
         </div>
-        
-        <div class="info-card">
-            <h6>Experimental</h6>
-            <MaterialDesignIconComponent IconName="experiment"/>
-        </div>
-
-        <button @onclick="ToggleExperimentalThemeAsync" style="display: none;">
-            @(_isExperimental ? "Reset" : "Experiment")
-        </button>
     </div>
 </CardWrapperComponent>
 
@@ -88,12 +80,5 @@
         await JS.InvokeVoidAsync("setFont", _fontClassNames[index]);
         await InvokeAsync(StateHasChanged);
         await ToastService.ShowSuccessToastAsync($"Changed your default font to '{_fonts[index]}' !");
-    }
-
-    private async Task ToggleExperimentalThemeAsync()
-    {
-        _isExperimental = !_isExperimental;
-        var experimental = _isExperimental ? "experimental" : "";
-        await JS.InvokeVoidAsync("setExperimentalTheme", experimental);
     }
 }

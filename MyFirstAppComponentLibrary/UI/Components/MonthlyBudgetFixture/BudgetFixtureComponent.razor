@@ -1,12 +1,11 @@
-﻿@using MyFirstAppComponentLibrary.UI.Components.MonthlyBudgetFixture
-@namespace MyFirstAppComponentLibrary.UI.Components
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
-@inject ExpenseRepository ExpenseRepository
 
 <CardWrapperComponent HeaderText="@DateTime.Today.ToString("MMMM")" IconName="edit" IsLargeText="true" OnIconClick="OpenPopupAsync">
     <div class="card-body">
         @if (_budgetFixture is not null)
         {
+            <MaterialDesignIconComponent IconName="notes"/>
             <h6>Summary</h6>
             <div class="info-card">
                 <p class="secondary-text">Net Salary</p>
@@ -27,33 +26,7 @@
                 <p class="secondary-text">Amount Left Over</p>
                 <h1>R@_budgetFixture.LeftOverAmount</h1>
             </div>
-
-            @if (_budgetFixture.NumberOfExpenses > 0)
-            {
-                <h6>Insights</h6>
-                <div class="info-card">
-                    <MaterialDesignIconComponent IconName="analytics"/>
-                    <p>
-                        This is where your budget insights will go
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <MaterialDesignIconComponent IconName="paid"/>
-                    <p>
-                        <strong>@_paidExpenseCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are paid for.
-                        <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_paidExpenseCount"/>
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <MaterialDesignIconComponent IconName="trending_down"/>
-                    <p>
-                        <strong>@_overBudgetCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are overbudget.
-                        <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_overBudgetCount" IsDanger="true"/>
-                    </p>
-                </div>
-            }
+            <p>Stay up-to-date with <strong>your budget</strong>.</p>
         }
         else
         {
@@ -72,8 +45,6 @@
 
 @code {
     private MonthlyBudgetFixtureModel? _budgetFixture;
-    private int _paidExpenseCount;
-    private int _overBudgetCount;
     private bool _showPopup;
 
     protected override async Task OnParametersSetAsync()
@@ -81,11 +52,10 @@
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixture = model;
-            if (_budgetFixture is null) return;
-            _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(model.Id);
-            _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(model.Id);
             await InvokeAsync(StateHasChanged);
         });
+
+        _budgetFixture = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
     }
 
     private void OpenPopupAsync()

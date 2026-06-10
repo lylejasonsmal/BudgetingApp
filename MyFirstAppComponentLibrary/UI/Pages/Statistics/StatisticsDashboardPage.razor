@@ -1,11 +1,152 @@
 ﻿@namespace UI.Pages
 @page "/statistics-dashboard"
+@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 
 <div class="page">
-    <CardWrapperComponent HeaderText="Annual Savings" IconName="savings">
-        <p class="secondary-text">This is where your savings graph will display</p>
+    <CardWrapperComponent>
+        <MaterialDesignIconComponent IconName="conversion_path"/>
+        <h1 class="large-text">Track Your Spending Habits</h1>
+        <p class="secondary-text">Understanding the way you spend is the first step towards saving money.</p>
     </CardWrapperComponent>
-    <CardWrapperComponent HeaderText="Total Expenditure" IconName="wallet" Link="/">
-        <p class="secondary-text">This is where your expenses graph will display</p>
+    <CardWrapperComponent HeaderText="Expenditure Vs Budget" Link="/" IsLargeText="true">
+        <span class="secondary-text">
+            This graph below shows your
+            <strong>total expenditure</strong> vs <strong>your budget</strong>.
+        </span>
+
+        @if (!_hasData)
+        {
+            <SpinnerComponent/>
+        }
+        <div hidden="@(!_hasData)">
+            <BarChart @ref="_barChart"/>
+        </div>
     </CardWrapperComponent>
+
+    <CardWrapperComponent HeaderText="Total Expenditure" Link="/" IsLargeText="true">
+        <span class="secondary-text">
+            This graph below shows your
+            <strong>paid expenses</strong> and their actual expenditure ratio
+            when compared to other <strong>paid expenses</strong>.
+        </span>
+
+        @if (!_hasData)
+        {
+            <SpinnerComponent/>
+        }
+        <div hidden="@(!_hasData)">
+            <DoughnutChart @ref="_doughnutChart"/>
+        </div>
+    </CardWrapperComponent>
+
+    <SavingsStatisticsComponent/>
 </div>
+@code
+{
+    private DoughnutChart _doughnutChart = null!;
+    private readonly DoughnutChartOptions _doughnutChartOptions = new();
+    private BarChart _barChart = null!;
+    private readonly BarChartOptions _barChartOptions = new();
+    private bool _hasData;
+    private bool _chartInitialized;
+    private MonthlyBudgetFixtureModel? _budgetFixtureModel;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await MonthlyBudgetFixtureService.SubscribeAsync(async budgetFixture =>
+        {
+            _budgetFixtureModel = budgetFixture;
+            if (_budgetFixtureModel is null) return;
+            await InitializeOrRefreshChartsAsync();
+        });
+
+        _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
+        await InitializeOrRefreshChartsAsync();
+    }
+
+    private async Task InitializeOrRefreshChartsAsync()
+    {
+        
+        var expenses = await ExpenseRepository.GetExpensesByFixtureIdAsync(_budgetFixtureModel!.Id);
+        var paidExpenses = expenses.Where(x => x.IsPaidFor).ToList();
+
+        _hasData = paidExpenses.Count > 0;
+        await InvokeAsync(StateHasChanged);
+
+        if (_hasData)
+        {
+            var doughnutChartData = new ChartData
+            {
+                Labels = paidExpenses.OrderBy(x => x.ActualAmount).Select(x => x.ExpenseName ?? string.Empty).ToList(),
+                Datasets = new List<IChartDataset>
+                    {
+                        new DoughnutChartDataset
+                        {
+                            Label = "Expenditure",
+                            Data = paidExpenses.Select(x => x.ActualAmount).Order().ToList(),
+                            BorderColor = new List<string>()
+                            {
+                                "#282828"
+                            },
+                            BackgroundColor = new List<string>()
+                            {
+                                "#E3B8D6",
+                                "#282828"
+                            },
+                            BorderWidth = new List<double>()
+                            {
+                                1
+                            },
+                        }
+                    }
+            };
+
+            var chartData = new ChartData
+            {
+                Labels = ["Expenditure", "Budget"],
+                Datasets = new List<IChartDataset>
+                    {
+                        new BarChartDataset
+                        {
+                            Label = "Expenditure Vs Budget",
+                            Data = new List<double?>
+                            {
+                                _budgetFixtureModel.StoredNetSalary-_budgetFixtureModel.LeftOverAmount,
+                                _budgetFixtureModel.BudgetedForAmount
+                            },
+                            BorderColor = new List<string>
+                            {
+                                "#E3B8D6",
+                                "#282828"
+                            },
+                            BackgroundColor = new List<string>
+                            {
+                                "#E3B8D6",
+                                "#282828"
+                            },
+                            BorderWidth = new List<double>
+                            {
+                                1,
+                                1
+                            }
+                        }
+                    }
+            };
+
+            if (_chartInitialized)
+            {
+                await _doughnutChart.UpdateAsync(doughnutChartData, _doughnutChartOptions);
+                await _barChart.UpdateAsync(chartData, _barChartOptions);
+            }
+            else
+            {
+                await _doughnutChart.InitializeAsync(doughnutChartData, _doughnutChartOptions);
+                await _barChart.InitializeAsync(chartData, _barChartOptions);
+                _chartInitialized = true;
+            }
+        }
+    }
+}

@@ -1,0 +1,54 @@
+﻿@inject ExpenseRepository ExpenseRepository
+@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+
+@if (_budgetFixture is not null)
+{
+    <div class="card-body">
+        <h6>Insights</h6>
+
+        <div class="info-card">
+            <MaterialDesignIconComponent IconName="paid"/>
+            <p>
+                <strong>@_paidExpenseCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are paid for.
+                <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_paidExpenseCount"/>
+            </p>
+        </div>
+
+        <div class="info-card">
+            <MaterialDesignIconComponent IconName="trending_down"/>
+            <p>
+                <strong>@_overBudgetCount</strong> out of <strong>@_budgetFixture.NumberOfExpenses</strong> expenses are overbudget.
+                <ProgressBarComponent Total="_budgetFixture.NumberOfExpenses!.Value" Progress="_overBudgetCount" IsDanger="true"/>
+            </p>
+        </div>
+    </div>
+}
+
+@code {
+    private int _paidExpenseCount;
+    private int _overBudgetCount;
+    private MonthlyBudgetFixtureModel? _budgetFixture;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
+        {
+            _budgetFixture = model;
+
+            if (_budgetFixture is null) return;
+            await LoadOrRefreshInsightsAsync();
+        });
+
+        _budgetFixture = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
+        await LoadOrRefreshInsightsAsync();
+    }
+
+    private async Task LoadOrRefreshInsightsAsync()
+    {
+        _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(_budgetFixture!.Id);
+        _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(_budgetFixture.Id);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

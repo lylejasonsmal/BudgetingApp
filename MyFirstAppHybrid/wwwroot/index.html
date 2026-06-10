@@ -10,57 +10,51 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="MyFirstAppHybrid.styles.css" />
     <link rel="stylesheet" href="css/MyFirstAppComponentLibrary.styles.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
     <link rel="icon" href="data:,">
 </head>
 <body>
-<div class="status-bar-safe-area"></div>
-<div id="app" class="page" style="justify-content: center; align-items:center;"><h1>Welcome</h1></div>
-<script src="_framework/blazor.webview.js" autostart="false"></script>
-<script>
-    (function () {
-        const savedTheme = localStorage.getItem("app-theme");
-        const theme = savedTheme || "dark-theme";
+    <div class="status-bar-safe-area"></div>
+    <div id="app" class="page" style="justify-content: center; align-items:center;"><h1>Welcome</h1></div>
 
-        document.body.classList.remove("light-theme", "dark-theme");
-        document.body.classList.add(theme);
+    <script src="js/chart.umd.js"></script>
+    <script src="js/blazorexpress.chartjs.js"></script>
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("app-theme");
+            const theme = savedTheme || "dark-theme";
 
-        const savedFont = localStorage.getItem("app-font");
-        const font = savedFont || "default-font";
+            document.body.classList.remove("light-theme", "dark-theme");
+            document.body.classList.add(theme);
 
-        document.body.classList.remove("default-font", "secondary-font", "tertiary-font");
-        document.body.classList.add(font);
-    })();
+            const savedFont = localStorage.getItem("app-font");
+            const font = savedFont || "default-font";
 
-    window.setTheme = function (theme) {
-        document.body.classList.remove("light-theme", "dark-theme");
-        document.body.classList.add(theme);
-        localStorage.setItem("app-theme", theme);
-    };
+            document.body.classList.remove("default-font", "secondary-font", "tertiary-font");
+            document.body.classList.add(font);
+        })();
 
-    window.getSavedTheme = function () {
-        return localStorage.getItem("app-theme");
-    };
+        window.setTheme = function (theme) {
+            document.body.classList.remove("light-theme", "dark-theme");
+            document.body.classList.add(theme);
+            localStorage.setItem("app-theme", theme);
+        };
 
-    window.setFont = function (font) {
-        document.body.classList.remove("default-font", "secondary-font", "tertiary-font", "quaternary-font");
-        document.body.classList.add(font);
-        localStorage.setItem("app-font", font);
-    };
+        window.getSavedTheme = function () {
+            return localStorage.getItem("app-theme");
+        };
 
-    window.getSavedFont = function () {
-        return localStorage.getItem("app-font");
-    };
+        window.setFont = function (font) {
+            document.body.classList.remove("default-font", "secondary-font", "tertiary-font", "quaternary-font");
+            document.body.classList.add(font);
+            localStorage.setItem("app-font", font);
+        };
 
-    window.setExperimentalTheme = function (themeClass) {
-        document.body.classList.remove("experimental");
+        window.getSavedFont = function () {
+            return localStorage.getItem("app-font");
+        };
 
-        if (themeClass && themeClass.trim() !== "") {
-            document.body.classList.add(themeClass);
-        }
-    };
-
-</script>
+    </script>
 </body>
 </html>

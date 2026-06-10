@@ -14,7 +14,7 @@
 		<EnableDefaultCssItems>false</EnableDefaultCssItems>
 		<Nullable>enable</Nullable>
 
-		<ApplicationTitle>Lyle's App</ApplicationTitle>
+		<ApplicationTitle>PrettyPennies</ApplicationTitle>
 		<ApplicationId>com.companyname.myfirstapphybrid</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
