@@ -15,13 +15,6 @@ namespace MyFirstApp.Services.Implementations.UserService
             _userRepository = userRepository;
         }
 
-        public async Task SubscribeAsync(Func<UserModel, Task> handler)
-        {
-            Subscribe(handler);
-
-            await Task.CompletedTask;
-        }
-
         public async Task<Result> UpdateUserAsync(UserModel userModel)
         {
             var resultBuilder = Result.Builder();

@@ -15,22 +15,22 @@
 
     <div>
         <h6>Expense Name</h6>
-        <input placeholder="Expense Name" @bind="_expenseName"/>
+        <input placeholder="Expense Name" @bind="_expense.ExpenseName"/>
     </div>
 
     <div>
         <h6>Budgeted For Amount</h6>
-        <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_budgetedForAmount"/>
+        <input placeholder="Budgeted For Amount" type="number" step="0.01" @bind="_expense.BudgetedForAmount"/>
     </div>
 
     <div>
         <h6>Actual Amount</h6>
-        <input placeholder="Actual Amount" type="number" step="0.01" @bind="_actualAmount"/>
+        <input placeholder="Actual Amount" type="number" step="0.01" @bind="_expense.ActualAmount"/>
     </div>
 
     <div>
         <h6>Notes</h6>
-        <textarea placeholder="Notes" @bind="_notes"></textarea>
+        <textarea placeholder="Notes" @bind="_expense.Notes"></textarea>
     </div>
 
     <div class="popup-actions">
@@ -42,16 +42,13 @@
 @code {
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
-
-    private string? _expenseName;
-    private double? _budgetedForAmount;
-    private double? _actualAmount;
-    private string? _notes;
+    private ExpenseModel? _expense;
 
     private IList<string> _errors = [];
 
     protected override async Task OnParametersSetAsync()
     {
+        _expense = new ExpenseModel();
         _errors = [];
         await InvokeAsync(StateHasChanged);
     }
@@ -74,10 +71,10 @@
 
         ExpenseModel expense = new ExpenseModel
         {
-            ExpenseName = _expenseName,
-            BudgetedForAmount = _budgetedForAmount,
-            ActualAmount = _actualAmount,
-            Notes = _notes,
+            ExpenseName = _expense.ExpenseName,
+            BudgetedForAmount = _expense.BudgetedForAmount,
+            ActualAmount = _expense.ActualAmount,
+            Notes = _expense.Notes,
             IsPaidFor = false,
             IsARecurringExpense = false,
             MonthlyBudgetFixtureId = currentBudgetFixtureId.Value
@@ -90,7 +87,7 @@
         {
             _errors = [];
             await VisibleChanged.InvokeAsync(false);
-            await ToastService.ShowSuccessToastAsync($"Successfully added a new expense '{expense.ExpenseName}'!");
+            await ToastService.ShowSuccessToastAsync($"Successfully added a new expense.");
         }
         else if (result.Unsuccessful && result.Errors is not null)
         {

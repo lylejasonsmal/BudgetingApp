@@ -5,7 +5,6 @@ namespace MyFirstApp.Services.Interfaces
 {
     public interface IToastService : IPublisher<Result>
     {
-        Task SubscribeAsync(Func<Result, Task> handler);
         Task ShowSuccessToastAsync(string message);
         Task ShowFailureToastAsync(string message);
     }

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using SQLite;
+﻿using SQLite;
 
 namespace MyFirstApp.Domain.Models
 {
@@ -39,7 +38,7 @@ namespace MyFirstApp.Domain.Models
 
         public string ToFullName()
         {
-            return FirstName + " " + LastName;
+            return FirstName!.Trim() + " " + LastName!.Trim();
         }
     }
 }

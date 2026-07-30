@@ -1,0 +1,15 @@
+@namespace MyFirstAppComponentLibrary.UI.Components
+
+<svg viewBox="@Icon.ViewBox" @attributes="AdditionalAttributes">
+    @foreach (var path in Icon.Paths)
+    {
+        <path fill="@path.Fill" d="@path.Data"/>
+    }
+</svg>
+
+@code {
+    [Parameter] public required SvgIconModel Icon { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

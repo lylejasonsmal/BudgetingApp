@@ -1,20 +1,50 @@
-﻿@inject IToastService ToastService
+﻿@inject ISavingsService SavingsService
 
-<CardWrapperComponent HeaderText="Savings" IsLargeText="true">
-    <div class="card-body">
-        <div>
-            <MaterialDesignIconComponent IconName="savings"/>
-            <h1 class="large-text">Start Saving</h1>
-            <p class="secondary-text">Add a savings pocket and work towards your dreams!</p>
-            <button @onclick="OpenAddSavingsPocketPopup">Add Savings Pocket</button>
+<CardWrapperComponent HeaderText="Savings Pockets" IsLargeText="true">
+    @if (_savingsPockets.Count == 0)
+    {
+        <div class="card-body">
+            <div>
+                <MaterialDesignIconComponent IconName="savings"/>
+                <h1 class="large-text">Start Saving</h1>
+                <p class="secondary-text">Add a savings pocket and work towards your dreams!</p>
+                <button @onclick="OpenAddSavingsPocketPopup">Add Savings Pocket</button>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="savings-container">
+            <p class="secondary-text">You're <strong>@_savingsPockets.Count steps</strong> closer to your dreams.</p>
+            @foreach (var savingsPocket in _savingsPockets)
+            {
+                <SavingsPocketComponent @key="savingsPocket" Id="@savingsPocket"/>
+            }
+
+            <button class="floating-button" @onclick="OpenAddSavingsPocketPopup">
+                <MaterialDesignIconComponent IconName="add" />
+            </button>
+        </div>
+    }
 </CardWrapperComponent>
+<AddSavingsPocketPopupComponent @bind-Visible="_showPopup"/>
 
 @code {
-    
+    private bool _showPopup;
+    private IReadOnlyList<int> _savingsPockets = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SavingsService.SubscribeAsync(async pockets =>
+        {
+            _savingsPockets = pockets.Select(pocket => pocket.Id).ToList();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
     private async Task OpenAddSavingsPocketPopup()
     {
-        await ToastService.ShowFailureToastAsync("Not Supported Yet. Coming Soon!");
+        _showPopup = true;
+        await InvokeAsync(StateHasChanged);
     }
 }

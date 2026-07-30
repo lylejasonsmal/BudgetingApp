@@ -1,6 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
-<HeaderBarComponent/>
-@Body
-<NavigationBarComponent />
-<ToastComponent />
+<ErrorCatcherComponent>
+    <HeaderBarComponent/>
+    <PageWrapper>
+        @Body
+    </PageWrapper>
+    <NavigationBarComponent />
+    <ToastComponent />
+</ErrorCatcherComponent>

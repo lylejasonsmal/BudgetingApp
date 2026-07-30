@@ -124,7 +124,7 @@
 
     private async Task UpdateAsync()
     {
-        if (_user.Validate() is var validationErrors && validationErrors.Count > 0)
+        if (_user.Validate() is { Count: > 0 } validationErrors)
         {
             _errors = validationErrors;
             await InvokeAsync(StateHasChanged);
@@ -136,7 +136,7 @@
         if (result.Successful)
         {
             await VisibleChanged.InvokeAsync(false);
-            await ToastService.ShowSuccessToastAsync($"Successfully updated your profile, {_user.FirstName}!");
+            await ToastService.ShowSuccessToastAsync("Successfully updated your profile.");
             _errors = new List<string>();
         }
     }

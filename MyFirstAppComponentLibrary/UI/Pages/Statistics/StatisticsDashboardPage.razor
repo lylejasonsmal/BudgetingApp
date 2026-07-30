@@ -1,19 +1,20 @@
 ﻿@namespace UI.Pages
 @page "/statistics-dashboard"
+@using MyFirstApp.Domain.Helpers
 @inject ExpenseRepository ExpenseRepository
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
+@inject NavigationManager NavigationManager
 
-<div class="page">
     <CardWrapperComponent>
         <MaterialDesignIconComponent IconName="conversion_path"/>
         <h1 class="large-text">Track Your Spending Habits</h1>
         <p class="secondary-text">Understanding the way you spend is the first step towards saving money.</p>
     </CardWrapperComponent>
-    <CardWrapperComponent HeaderText="Expenditure Vs Budget" Link="/" IsLargeText="true">
-        <span class="secondary-text">
-            This graph below shows your
-            <strong>total expenditure</strong> vs <strong>your budget</strong>.
-        </span>
+        <CardWrapperComponent HeaderText="Expenditure Vs Budget" Link="/" IsLargeText="true">
+            <span class="secondary-text">
+                This graph below shows your
+                <strong>total expenditure</strong> vs <strong>your budget</strong>.
+            </span>
 
         @if (!_hasData)
         {
@@ -22,14 +23,14 @@
         <div hidden="@(!_hasData)">
             <BarChart @ref="_barChart"/>
         </div>
-    </CardWrapperComponent>
+        </CardWrapperComponent>
 
-    <CardWrapperComponent HeaderText="Total Expenditure" Link="/" IsLargeText="true">
-        <span class="secondary-text">
-            This graph below shows your
-            <strong>paid expenses</strong> and their actual expenditure ratio
-            when compared to other <strong>paid expenses</strong>.
-        </span>
+        <CardWrapperComponent HeaderText="Total Expenditure" Link="/" IsLargeText="true">
+            <span class="secondary-text">
+                This graph below shows your
+                <strong>paid expenses</strong> and their actual expenditure ratio
+                when compared to other <strong>paid expenses</strong>.
+            </span>
 
         @if (!_hasData)
         {
@@ -38,10 +39,9 @@
         <div hidden="@(!_hasData)">
             <DoughnutChart @ref="_doughnutChart"/>
         </div>
-    </CardWrapperComponent>
+        </CardWrapperComponent>
 
     <SavingsStatisticsComponent/>
-</div>
 @code
 {
     private DoughnutChart _doughnutChart = null!;
@@ -51,6 +51,16 @@
     private bool _hasData;
     private bool _chartInitialized;
     private MonthlyBudgetFixtureModel? _budgetFixtureModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TaskRunner.ExecuteAsync("Initialize Statistics Dashboard", async () =>
+        {
+            _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
+            if (_budgetFixtureModel is null) return;
+            await InitializeOrRefreshChartsAsync();
+        });
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -62,27 +72,25 @@
             if (_budgetFixtureModel is null) return;
             await InitializeOrRefreshChartsAsync();
         });
-
-        _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
-        await InitializeOrRefreshChartsAsync();
     }
 
     private async Task InitializeOrRefreshChartsAsync()
     {
-        
-        var expenses = await ExpenseRepository.GetExpensesByFixtureIdAsync(_budgetFixtureModel!.Id);
-        var paidExpenses = expenses.Where(x => x.IsPaidFor).ToList();
-
-        _hasData = paidExpenses.Count > 0;
-        await InvokeAsync(StateHasChanged);
-
-        if (_hasData)
+        await TaskRunner.ExecuteAsync("Initialize Or Refresh Charts", async () =>
         {
-            var doughnutChartData = new ChartData
+            var expenses = await ExpenseRepository.GetExpensesByFixtureIdAsync(_budgetFixtureModel!.Id);
+            var paidExpenses = expenses.Where(x => x.IsPaidFor).ToList();
+
+            _hasData = paidExpenses.Count > 0;
+            await InvokeAsync(StateHasChanged);
+
+            if (_hasData)
             {
-                Labels = paidExpenses.OrderBy(x => x.ActualAmount).Select(x => x.ExpenseName ?? string.Empty).ToList(),
-                Datasets = new List<IChartDataset>
+                var doughnutChartData = new ChartData
                     {
+                        Labels = paidExpenses.OrderBy(x => x.ActualAmount).Select(x => x.ExpenseName ?? string.Empty).ToList(),
+                        Datasets = new List<IChartDataset>
+                        {
                         new DoughnutChartDataset
                         {
                             Label = "Expenditure",
@@ -101,20 +109,20 @@
                                 1
                             },
                         }
-                    }
-            };
+                        }
+                    };
 
-            var chartData = new ChartData
-            {
-                Labels = ["Expenditure", "Budget"],
-                Datasets = new List<IChartDataset>
+                var chartData = new ChartData
                     {
+                        Labels = ["Expenditure", "Budget"],
+                        Datasets = new List<IChartDataset>
+                        {
                         new BarChartDataset
                         {
                             Label = "Expenditure Vs Budget",
                             Data = new List<double?>
                             {
-                                _budgetFixtureModel.StoredNetSalary-_budgetFixtureModel.LeftOverAmount,
+                                _budgetFixtureModel.StoredNetSalary - _budgetFixtureModel.LeftOverAmount,
                                 _budgetFixtureModel.BudgetedForAmount
                             },
                             BorderColor = new List<string>
@@ -133,20 +141,21 @@
                                 1
                             }
                         }
-                    }
-            };
+                        }
+                    };
 
-            if (_chartInitialized)
-            {
-                await _doughnutChart.UpdateAsync(doughnutChartData, _doughnutChartOptions);
-                await _barChart.UpdateAsync(chartData, _barChartOptions);
+                if (_chartInitialized)
+                {
+                    await _doughnutChart.UpdateAsync(doughnutChartData, _doughnutChartOptions);
+                    await _barChart.UpdateAsync(chartData, _barChartOptions);
+                }
+                else
+                {
+                    await _doughnutChart.InitializeAsync(doughnutChartData, _doughnutChartOptions);
+                    await _barChart.InitializeAsync(chartData, _barChartOptions);
+                    _chartInitialized = true;
+                }
             }
-            else
-            {
-                await _doughnutChart.InitializeAsync(doughnutChartData, _doughnutChartOptions);
-                await _barChart.InitializeAsync(chartData, _barChartOptions);
-                _chartInitialized = true;
-            }
-        }
+        });
     }
 }

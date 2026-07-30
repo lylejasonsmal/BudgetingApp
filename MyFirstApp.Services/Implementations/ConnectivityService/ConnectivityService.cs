@@ -1,4 +1,5 @@
 using Microsoft.Maui.Networking;
+using MyFirstApp.Domain.Helpers;
 using MyFirstApp.Services.Implementations.PublisherService;
 using MyFirstApp.Services.Interfaces;
 
@@ -23,51 +24,52 @@ namespace MyFirstApp.Services.Implementations.ConnectivityService
 
         public bool IsConnected { get; private set; }
 
-        public async Task SubscribeAsync(Func<bool, Task> handler)
-        {
-            Subscribe(handler);
-            await Task.CompletedTask;
-        }
-
         public async Task<bool> CheckConnectivityAsync()
         {
-            var isConnected = await HasInternetAsync();
-            if (isConnected != IsConnected)
+            return await TaskRunner.ExecuteAsync("Check Device Connectivity",async () =>
             {
-                IsConnected = isConnected;
-                await PublishAsync(isConnected);
-            }
-            return isConnected;
+                var isConnected = await HasInternetAsync();
+                if (isConnected != IsConnected)
+                {
+                    IsConnected = isConnected;
+                    await PublishAsync(isConnected);
+                }
+
+                return isConnected;
+            });
         }
 
         // NetworkAccess only tells us the device is attached to a network that should have internet,
         // not that the internet is actually reachable, so we confirm with an active probe.
         private async Task<bool> HasInternetAsync()
         {
-            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
-                return false;
+            return await TaskRunner.ExecuteAsync("Check If User Can Access Internet", async () =>
+            {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                    return false;
 
-            try
-            {
-                using var response = await _httpClient.GetAsync(ProbeUri);
-                return response.IsSuccessStatusCode;
-            }
-            catch
-            {
-                return false;
-            }
+                try
+                {
+                    using var response = await _httpClient.GetAsync(ProbeUri);
+                    return response.IsSuccessStatusCode;
+                }
+                catch
+                {
+                    return false;
+                }
+            });
         }
 
-        // Poll so we also catch the internet dropping while the device stays attached to Wi-Fi,
-        // which does not raise ConnectivityChanged.
         private async Task MonitorAsync()
         {
-            using var timer = new PeriodicTimer(PollInterval);
-            do
+            await TaskRunner.ExecuteAsync("Probe Connectivity", async () =>
             {
-                await CheckConnectivityAsync();
-            }
-            while (await timer.WaitForNextTickAsync());
+                using var timer = new PeriodicTimer(PollInterval);
+                do
+                {
+                    await CheckConnectivityAsync();
+                } while (await timer.WaitForNextTickAsync());
+            });
         }
     }
 }

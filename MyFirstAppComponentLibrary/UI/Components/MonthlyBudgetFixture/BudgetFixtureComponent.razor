@@ -5,7 +5,6 @@
     <div class="card-body">
         @if (_budgetFixture is not null)
         {
-            <MaterialDesignIconComponent IconName="notes"/>
             <h6>Summary</h6>
             <div class="info-card">
                 <p class="secondary-text">Net Salary</p>
@@ -26,7 +25,7 @@
                 <p class="secondary-text">Amount Left Over</p>
                 <h1>R@_budgetFixture.LeftOverAmount</h1>
             </div>
-            <p>Stay up-to-date with <strong>your budget</strong>.</p>
+            <p class ="secondary-text">Stay up-to-date with <strong>your budget</strong>.</p>
         }
         else
         {

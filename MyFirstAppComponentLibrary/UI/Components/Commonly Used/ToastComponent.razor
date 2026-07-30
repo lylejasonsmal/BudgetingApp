@@ -1,17 +1,24 @@
-﻿@inject IToastService ToastService
+﻿@using MyFirstApp.Domain.Helpers
+@inject IToastService ToastService
 
 @if (_showToast && _currentToast is not null)
 {
 
     <div class="app-toast @(_currentToast.Type == ToastType.Success ? "" : "error-app-toast")">
-        <MaterialDesignIconComponent IconName="@(_currentToast.Type == ToastType.Success ? "check_small" : "error")" />
-        <p>
-            @_currentToast.Message
-        </p>
-        
+        <div class="message-box">
+            <MaterialDesignIconComponent IconName="@(_currentToast.Type == ToastType.Success ? "check_small" : "error")"/>
+            <p>@_currentToast.Message</p>
+        </div>
+
+        <div @onclick="CloseOrClearToastQueueAsync">
+            <MaterialDesignIconComponent IconName="close"/>
+        </div>
+
         @if (_toastQueue.Count > 0)
         {
-            <strong class="toast-queue-count">@_toastQueue.Count</strong>
+            <strong class="toast-queue-count">
+                @_toastQueue.Count
+            </strong>
         }
     </div>
 }
@@ -23,50 +30,67 @@
     private readonly Queue<Toast> _toastQueue = new();
     private bool _isProcessing;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (!firstRender) return;
-
-        await ToastService.SubscribeAsync(async result =>
+        await TaskRunner.ExecuteAsync("Initialize Toast Component", async () =>
         {
-            if (_toastQueue.Count >= 3) return;
-            var toast = new Toast(
-                Message: result.Message ?? "No message",
-                Type: result.Successful ? ToastType.Success : ToastType.Error
-            );
+            await ToastService.SubscribeAsync(async result =>
+            {
+                if (_toastQueue.Count >= 3) await Task.CompletedTask;
 
-            _toastQueue.Enqueue(toast);
+                var toast = new Toast(
+                    Message: result.Message ?? "No message",
+                    Type: result.Successful ? ToastType.Success : ToastType.Error
+                );
 
-            _ = ProcessQueueAsync();
+                _toastQueue.Enqueue(toast);
+
+                _ = ProcessQueueAsync();
+            });
         });
     }
 
     private async Task ProcessQueueAsync()
     {
-        if (_isProcessing)
+        await TaskRunner.ExecuteAsync("Process Toast Queue", async () =>
         {
-            //Refreshes toast count
-            await InvokeAsync(StateHasChanged);
-            return;
-        }
+            if (_isProcessing)
+            {
+                //Refreshes toast count
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
 
-        _isProcessing = true;
+            _isProcessing = true;
 
-        while (_toastQueue.Count > 0)
+            while (_toastQueue.Count > 0)
+            {
+                _currentToast = _toastQueue.Dequeue();
+
+                _showToast = true;
+
+                await InvokeAsync(StateHasChanged);
+
+                await Task.Delay(5000);
+
+                _showToast = false;
+                await InvokeAsync(StateHasChanged);
+            }
+
+            _isProcessing = false;
+        });
+    }
+
+    private async Task CloseOrClearToastQueueAsync()
+    {
+        await TaskRunner.ExecuteAsync("Close Or Clear Toast Queue", async () =>
         {
-            _currentToast = _toastQueue.Dequeue();
-
-            _showToast = true;
-
-            await InvokeAsync(StateHasChanged);
-
-            await Task.Delay(5000);
-
+            _toastQueue.Clear();
+            _currentToast = null;
             _showToast = false;
+            _isProcessing = false;
             await InvokeAsync(StateHasChanged);
-        }
-
-        _isProcessing = false;
+        });
     }
 
     public record Toast(string Message, ToastType Type);

@@ -4,6 +4,13 @@
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
-        <h6 class="page">Under Development. Check Back Soon!</h6>
+        <PageWrapper>
+            <CardWrapperComponent Link="/">
+                <h1 class="large-text">
+                    Page Not Found!
+                </h1>
+                <p>Try Again Later.</p>
+            </CardWrapperComponent>
+        </PageWrapper>
     </NotFound>
 </Router>

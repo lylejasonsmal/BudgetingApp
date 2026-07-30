@@ -3,30 +3,48 @@
 
 <div id="navigation-bar" class="navigation-bar">
 
+    <div class="navigation-container @(IsActive("/expenses") ? "active" : "")"
+         @onclick="@(() => Navigate("/expenses"))">
+        <MaterialDesignIconComponent IconName="payments" />
+        @if (!IsActive("/expenses"))
+        {
+            <strong id="thread-navigation-link" class="caption secondary-text">Expenses</strong>
+        }
+    </div>
+
+    <div class="navigation-container @(IsActive("/savings") ? "active" : "")"
+         @onclick="@(() => Navigate("/savings"))">
+        <MaterialDesignIconComponent IconName="wallet" />
+        @if (!IsActive("/savings"))
+        {
+            <strong id="stats-navigation-link" class="caption secondary-text">Savings</strong>
+        }
+    </div>
+
     <div class="navigation-container @(IsActive("/") ? "active" : "")"
-         @onclick="GoToThread">
+         @onclick="@(() => Navigate("/"))">
         <MaterialDesignIconComponent IconName="home" />
         @if (!IsActive("/"))
         {
-            <strong id="thread-navigation-link" class="caption">Home</strong>
+            <strong id="thread-navigation-link" class="caption secondary-text">Home</strong>
         }
     </div>
 
     <div class="navigation-container @(IsActive("/statistics-dashboard") ? "active" : "")"
-         @onclick="GoToStats">
-        <MaterialDesignIconComponent IconName="analytics" />
+         @onclick="@(() => Navigate("/statistics-dashboard"))">
+        <MaterialDesignIconComponent IconName="dashboard_2" />
         @if (!IsActive("/statistics-dashboard"))
         {
-            <strong id="stats-navigation-link" class="caption">Statistics</strong>
+            <strong id="stats-navigation-link" class="caption secondary-text">Statistics</strong>
         }
     </div>
 
     <div class="navigation-container @(IsActive("/profile") ? "active" : "")"
-         @onclick="GoToProfile">
-        <MaterialDesignIconComponent IconName="person" />
+         @onclick="@(() => Navigate("/profile"))">
+        <MaterialDesignIconComponent IconName="manage_accounts" />
         @if (!IsActive("/profile"))
         {
-            <strong id="profile-navigation-link" class="caption">Profile</strong>
+            <strong id="profile-navigation-link" class="caption secondary-text">Profile</strong>
         }
     </div>
 
@@ -43,19 +61,9 @@
         InvokeAsync(StateHasChanged);
     }
 
-    private void GoToThread()
+    private void Navigate(string url)
     {
-        NavigationManager.NavigateTo("/");
-    }
-
-    private void GoToStats()
-    {
-        NavigationManager.NavigateTo("/statistics-dashboard");
-    }
-
-    private void GoToProfile()
-    {
-        NavigationManager.NavigateTo("/profile");
+        NavigationManager.NavigateTo(url);
     }
 
     private bool IsActive(string route)

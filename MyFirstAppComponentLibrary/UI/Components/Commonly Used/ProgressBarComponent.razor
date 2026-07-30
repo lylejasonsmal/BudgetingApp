@@ -1,13 +1,15 @@
-﻿<div class="progress-container">
-    <div class="progress-bar @(IsDanger? "danger" : "")" style="width:@ProgressPercentage%"></div>
+﻿@using System.Globalization
+
+<div class="progress-container">
+    <div class="progress-bar @(IsDanger? "danger" : "")" style="width:@ProgressPercentage"></div>
 </div>
 
 @code {
     [Parameter] public required double Total { get; set; }
     [Parameter] public required double Progress { get; set; }
-    [Parameter] public required bool IsDanger { get; set; } = false;
+    [Parameter] public bool IsDanger { get; set; }
 
-    private double? ProgressPercentage => Total == 0
-        ? 0
-        : (Progress * 100) / Total;
+    private string ProgressPercentage => Total == 0
+        ? "0%"
+        : ((Progress * 100) / Total).ToString("0.##", CultureInfo.InvariantCulture) + "%";
 }

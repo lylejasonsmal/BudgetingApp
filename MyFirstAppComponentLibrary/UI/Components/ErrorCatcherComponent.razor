@@ -1,0 +1,12 @@
+﻿@try
+{
+    @ChildContent
+}
+catch (Exception exception)
+{
+    <h1>ERROR</h1>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

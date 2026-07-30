@@ -29,6 +29,12 @@
     <div>
         <MaterialDesignIconComponent IconName="@(_isOnline ? "android_wifi_4_bar" : "android_wifi_4_bar_off")" />
     </div>
+    
+    
+    
+    <div @onclick="@(() => NavigationManager.NavigateTo("/developer"))">
+        <MaterialDesignIconComponent IconName="developer_board" />
+    </div>
 </div>
 <HappyBirthdayComponent @bind-Visible="_isUserBirthdayToday"/>
 

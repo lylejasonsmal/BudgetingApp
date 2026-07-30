@@ -1,0 +1,42 @@
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@implements IDisposable
+@inject ISavingsService SavingsService
+
+@if (_savingsPocketModel is not null)
+{
+    <CardWrapperComponent HeaderText="@_savingsPocketModel.Name" IconName="edit_note" OnIconClick="OpenEditSavingsPocketPopup">
+        <div class="main-body">
+            <div class="info-card">
+                <p>You have <strong>saved R@_savingsPocketModel.CurrentlySavedAmount</strong> out of <strong>your R@_savingsPocketModel.GoalAmount goal</strong>.</p>
+                <ProgressBarComponent Total="@_savingsPocketModel.GoalAmount" Progress="@_savingsPocketModel.CurrentlySavedAmount" />
+            </div>
+        </div>
+    </CardWrapperComponent>
+    <EditSavingsPocketPopupComponent @bind-Visible="_showPopup" Id="_savingsPocketModel.Id"/>
+}
+
+@code {
+    [Parameter] public required int Id { get; set; }
+    private SavingsPocketModel? _savingsPocketModel;
+    private bool _showPopup;
+    private IDisposable? _subscription;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _subscription = await SavingsService.SubscribeAsync(async _ => await LoadSavingsPocketAsync());
+    }
+
+    public void Dispose() => _subscription?.Dispose();
+
+    private async Task LoadSavingsPocketAsync()
+    {
+        _savingsPocketModel = await SavingsService.GetByIdAsync(Id);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OpenEditSavingsPocketPopup()
+    {
+        _showPopup = true;
+        await InvokeAsync(StateHasChanged);
+    }
+}

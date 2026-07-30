@@ -1,0 +1,88 @@
+﻿@namespace MyFirstAppComponentLibrary.UI.Components
+@inject ISavingsService SavingsService
+@inject IToastService ToastService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Edit Savings Pocket">
+
+    <button class="error" @onclick="DeleteAsync">
+        <MaterialDesignIconComponent IconName="delete" />
+        Delete This Savings Pocket
+    </button>
+    @foreach (var error in _errors)
+    {
+        <div class="info-card error error-message">
+            <h4>Error</h4>
+            <p>@error</p>
+        </div>
+    }
+
+    @if (_savingsPocketModel is not null)
+    {
+        <div>
+            <h6>Savings Pocket Name</h6>
+            <input placeholder="What should we call this savings pocket?" @bind="_savingsPocketModel.Name"/>
+        </div>
+
+        <div>
+            <h6>Goal Savings Milestone</h6>
+            <input placeholder="What is the goal amount to be saved?" type="number" step="0.01" @bind="_savingsPocketModel.GoalAmount" />
+        </div>
+
+        <div>
+            <h6>Currently Saved</h6>
+            <input placeholder="What have you saved currently?" type="number" step="0.01" @bind="_savingsPocketModel.CurrentlySavedAmount" />
+        </div>
+    }
+
+    <div class="popup-actions">
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button @onclick="UpdateAsync">Update</button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public required int Id { get; set; }
+
+    private SavingsPocketModel? _savingsPocketModel;
+    private IList<string> _errors = [];
+    private int? _loadedId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!Visible || _loadedId == Id) return;
+
+        _loadedId = Id;
+        _savingsPocketModel = await SavingsService.GetByIdAsync(Id);
+        _errors = [];
+    }
+
+    private async Task CancelAsync()
+    {
+        _errors = [];
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task UpdateAsync()
+    {
+        if (!_savingsPocketModel!.TryValidate(out var error))
+        {
+            if (error != null) _errors.Add(error);
+            await InvokeAsync(StateHasChanged);
+            return;
+
+        }
+
+        await SavingsService.UpdateAsync(_savingsPocketModel);
+        await ToastService.ShowSuccessToastAsync("Successfully updated your savings pocket.");
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task DeleteAsync()
+    {
+        await SavingsService.DeleteAsync(_savingsPocketModel!);
+        await VisibleChanged.InvokeAsync(false);
+        await ToastService.ShowSuccessToastAsync("Successfully deleted your savings pocket.");
+    }
+}

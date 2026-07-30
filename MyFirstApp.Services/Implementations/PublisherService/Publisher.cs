@@ -14,6 +14,15 @@ namespace MyFirstApp.Services.Implementations.PublisherService
             return new Unsubscriber(_subscribers, handler);
         }
 
+        public async Task<IDisposable> SubscribeAsync(Func<T, Task> handler)
+        {
+            var subscription = Subscribe(handler);
+            await OnSubscribedAsync(handler);
+            return subscription;
+        }
+
+        protected virtual Task OnSubscribedAsync(Func<T, Task> handler) => Task.CompletedTask;
+
         // Publish awaits all subscribers
         public async Task PublishAsync(T? value)
         {

@@ -6,12 +6,6 @@ namespace MyFirstApp.Services.Implementations.ToastService
 {
     public class ToastService: PublisherService<Result>, IToastService
     {
-        public async Task SubscribeAsync(Func<Result, Task> handler)
-        {
-            Subscribe(handler);
-            await Task.CompletedTask;
-        }
-
         public async Task ShowSuccessToastAsync(string message)
         {
             await PublishAsync(new Result(ResultOutcome.Success, null, message));

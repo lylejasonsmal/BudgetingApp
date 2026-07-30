@@ -1,4 +1,5 @@
 ﻿using MyFirstApp.Domain.Database;
+using MyFirstApp.Domain.Helpers;
 using MyFirstApp.Domain.Models;
 using SQLite;
 
@@ -8,6 +9,7 @@ namespace MyFirstApp.Services.Repositories
     {
         private readonly SqliteDatabaseService _dbService;
         private SQLiteAsyncConnection? _db;
+        private UserModel? _cachedUserModel;
 
         public UserRepository(SqliteDatabaseService dbService)
         {
@@ -28,16 +30,15 @@ namespace MyFirstApp.Services.Repositories
             }
         }
 
-        public async Task<List<UserModel>> GetAllAsync()
-        {
-            _db ??= await _dbService.GetConnectionAsync();
-            return await _db.Table<UserModel>().ToListAsync();
-        }
-
         public async Task<UserModel?> GetByIdAsync(int id)
         {
-            _db ??= await _dbService.GetConnectionAsync();
-            return await _db.FindAsync<UserModel>(id);
+            return await TaskRunner.ExecuteAsync("Load User", async () =>
+            {
+                _db ??= await _dbService.GetConnectionAsync();
+                var user = _cachedUserModel ?? await _db.FindAsync<UserModel>(id);
+                _cachedUserModel = user;
+                return user;
+            });
         }
 
         //TODO: Move to the service
@@ -50,8 +51,8 @@ namespace MyFirstApp.Services.Repositories
         public async Task<UserModel?> UpdateAsync(UserModel user)
         {
             _db ??= await _dbService.GetConnectionAsync();
-            var updatedUserId = await _db.UpdateAsync(user);
-            return await GetByIdAsync(updatedUserId);
+            await _db.UpdateAsync(user);
+            return _cachedUserModel = user;
         }
 
         //public async Task DeleteAsync(UserModel user)

@@ -4,9 +4,12 @@
         <div class="popup">
             <div class="popup-header">
                 <h2>@HeaderText</h2>
-                <div @onclick="Close">
-                    <MaterialDesignIconComponent IconName="close"/>
-                </div>
+                @if (ShowClosePopupButton)
+                {
+                    <div @onclick="Close">
+                        <MaterialDesignIconComponent IconName="close"/>
+                    </div>
+                }
             </div>
 
             <div class="popup-body">
@@ -21,6 +24,7 @@
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
     [Parameter] public string? HeaderText { get; set; }
     [Parameter] public required RenderFragment ChildContent { get; set; }
+    [Parameter] public bool ShowClosePopupButton { get; set; } = true;
 
     private async Task Close()
     {

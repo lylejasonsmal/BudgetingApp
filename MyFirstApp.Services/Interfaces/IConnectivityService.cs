@@ -5,7 +5,6 @@ namespace MyFirstApp.Services.Interfaces
     public interface IConnectivityService : IPublisher<bool>
     {
         bool IsConnected { get; }
-        Task SubscribeAsync(Func<bool, Task> handler);
         Task<bool> CheckConnectivityAsync();
     }
 }

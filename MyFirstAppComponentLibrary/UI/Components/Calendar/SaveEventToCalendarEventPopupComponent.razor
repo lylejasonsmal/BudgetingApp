@@ -1,0 +1,91 @@
+@namespace MyFirstAppComponentLibrary.UI.Components
+@inject IGoogleCalendarService GoogleCalendarService
+@inject IToastService ToastService
+
+<PopupWrapperComponent @bind-Visible="Visible" HeaderText="Save Event to Calendar">
+
+    @foreach (var error in _errors)
+    {
+        <div class="info-card error error-message">
+            <h4>Error</h4>
+            <p>@error</p>
+        </div>
+    }
+
+    <div>
+        <h6>Title</h6>
+        <input placeholder="Event title" @bind="_title"/>
+    </div>
+
+    <div>
+        <h6>Description</h6>
+        <textarea placeholder="Description" @bind="_description"></textarea>
+    </div>
+
+    <div>
+        <h6>Starts At</h6>
+        <input type="datetime-local" @bind="_startsAt"/>
+    </div>
+
+    <div>
+        <h6>Ends At</h6>
+        <input type="datetime-local" @bind="_endsAt"/>
+    </div>
+
+    <div class="popup-actions">
+        <button class="secondary-button" @onclick="CancelAsync">Cancel</button>
+        <button class="google-calendar-button" @onclick="SaveAsync">
+            <SvgIconComponent Icon="SvgIcons.GoogleLogo" aria-hidden="true"/>
+            Save to Google Calendar
+        </button>
+    </div>
+</PopupWrapperComponent>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+
+    private string? _title;
+    private string? _description;
+    private DateTime _startsAt = DateTime.Now;
+    private DateTime _endsAt = DateTime.Now.AddHours(1);
+
+    private IList<string> _errors = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _errors = [];
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CancelAsync()
+    {
+        _errors = [];
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task SaveAsync()
+    {
+        CalendarEventModel calendarEvent = new CalendarEventModel
+        {
+            Title = _title,
+            Description = _description,
+            StartsAt = _startsAt,
+            EndsAt = _endsAt
+        };
+
+        var result = await GoogleCalendarService.AddEventToCalendarAsync(calendarEvent);
+
+        if (result.Successful)
+        {
+            _errors = [];
+            await VisibleChanged.InvokeAsync(false);
+            await ToastService.ShowSuccessToastAsync("Opening Google Calendar to save your event...");
+        }
+        else if (result.Unsuccessful && result.Errors is not null)
+        {
+            _errors = result.Errors;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

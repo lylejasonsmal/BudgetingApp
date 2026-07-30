@@ -1,5 +1,11 @@
 @import '_content/Blazor.Bootstrap/Blazor.Bootstrap.olwso25aue.bundle.scp.css';
 
+/* _content/MyFirstAppComponentLibrary/UI/Components/Calendar/SaveEventToCalendarEventPopupComponent.razor.rz.scp.css */
+.google-calendar-button[b-zcunem8xgy] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/CardWrapperComponent.razor.rz.scp.css */
 .card[b-0ger2c1501] {
     display: flex;
@@ -202,6 +208,12 @@ img[b-w5s0bmlqnv] {
         transform: rotate(360deg);
     }
 }
+/* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/SvgIconComponent.razor.rz.scp.css */
+svg[b-tok9p75t7i] {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/Commonly Used/ToastComponent.razor.rz.scp.css */
 .toast-queue-count[b-k104fnzpt2] {
     position: absolute;
@@ -219,6 +231,20 @@ img[b-w5s0bmlqnv] {
     width: 40px;
     aspect-ratio: 1/1;
     border: 1px solid var(--primary-button-border);
+}
+
+.message-box[b-k104fnzpt2] {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 90%;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/EditExpensePopupComponent.razor.rz.scp.css */
+.google-calendar-button[b-q384oxpmli] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpenseComponent.razor.rz.scp.css */
 .main-body[b-ohjxmp6wew] {
@@ -247,12 +273,29 @@ img[b-w5s0bmlqnv] {
     height: 100%;
 }
 
-/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpensesComponent.razor.rz.scp.css */
-.expenses-container[b-hsb2l92ubs]{
+/* _content/MyFirstAppComponentLibrary/UI/Components/Expenses/ExpensesListComponent.razor.rz.scp.css */
+.expenses-container[b-j1rnzfhx59]{
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
     width: 100%;
+}
+
+.filter-expenses-panel[b-j1rnzfhx59]{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.filters-panel[b-j1rnzfhx59]{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+}
+
+.filters-panel button[b-j1rnzfhx59], .filter-button[b-j1rnzfhx59] {
+    border-radius: 2px;
 }
 /* _content/MyFirstAppComponentLibrary/UI/Components/HeaderBarComponent.razor.rz.scp.css */
 .header-bar[b-719fqv182b] {
@@ -375,6 +418,13 @@ img[b-q6suo9ajbb] {
 .navigation-container:hover[b-mhmy4p8bay]{
     opacity: 75%;
 }
+/* _content/MyFirstAppComponentLibrary/UI/Components/Savings/SavingsComponent.razor.rz.scp.css */
+.savings-container[b-awmnzlgcfo] {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+}
 /* _content/MyFirstAppComponentLibrary/UI/Components/User/EditUserProfileComponent.razor.rz.scp.css */
 .image-placeholder[b-te5u6a20mt] {
     aspect-ratio: 1/1;
@@ -449,20 +499,44 @@ img[b-6crowhzq3g] {
     height: 100px;
     border-radius: 100%
 }
-/* _content/MyFirstAppComponentLibrary/UI/Pages/ThreadPage.razor.rz.scp.css */
-.card-body[b-8dz0qa7pat] {
+/* _content/MyFirstAppComponentLibrary/UI/Pages/DeveloperPage.razor.rz.scp.css */
+.method-call-summary[b-cakgw1fzmv] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+/* _content/MyFirstAppComponentLibrary/UI/Pages/ExpensesPage.razor.rz.scp.css */
+.card-body[b-wo45ft4mnz] {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 @media (min-width: 600px) {
-    .expenses-container[b-8dz0qa7pat] {
+    .expenses-container[b-wo45ft4mnz] {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 @media (min-width: 1080px) {
-    .expenses-container[b-8dz0qa7pat] {
+    .expenses-container[b-wo45ft4mnz] {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+/* _content/MyFirstAppComponentLibrary/UI/Pages/SavingsPage.razor.rz.scp.css */
+.card-body[b-struo95ijc] {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media (min-width: 600px) {
+    .savings-container[b-struo95ijc] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1080px) {
+    .savings-container[b-struo95ijc] {
         grid-template-columns: repeat(3, 1fr);
     }
 }

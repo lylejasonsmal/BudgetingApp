@@ -1,4 +1,5 @@
-﻿@inject ExpenseRepository ExpenseRepository
+﻿@using MyFirstApp.Domain.Helpers
+@inject ExpenseRepository ExpenseRepository
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 
 @if (_budgetFixture is not null)
@@ -35,8 +36,6 @@
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixture = model;
-
-            if (_budgetFixture is null) return;
             await LoadOrRefreshInsightsAsync();
         });
 
@@ -46,9 +45,13 @@
 
     private async Task LoadOrRefreshInsightsAsync()
     {
-        _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(_budgetFixture!.Id);
-        _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(_budgetFixture.Id);
-        await InvokeAsync(StateHasChanged);
+        await TaskRunner.ExecuteAsync("Load Or Refresh Insights", async () =>
+        {
+            if(_budgetFixture is null) return;
+            _paidExpenseCount = await ExpenseRepository.GetPaidExpenseCount(_budgetFixture.Id);
+            _overBudgetCount = await ExpenseRepository.GetOverBudgetExpenseCount(_budgetFixture.Id);
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
 }

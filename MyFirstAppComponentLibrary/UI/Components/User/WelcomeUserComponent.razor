@@ -1,6 +1,5 @@
 ﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject UserRepository UserRepository
-@inject IUserService UserService
 
 @if (_user is not null)
 {
@@ -21,18 +20,12 @@
     private UserModel? _user;
     private string? _profileImageSrc;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (!firstRender) return;
-        
-        await UserService.SubscribeAsync(async model =>
-        {
-            _user = model;
-            await ConvertUserImage();
-        });
-
+        if (_user is not null) return;
         _user = await UserRepository.GetByIdAsync(1);
-        await ConvertUserImage();
+        _ = ConvertUserImage();
+
     }
 
     private async Task ConvertUserImage()

@@ -23,6 +23,7 @@ public class SqliteDatabaseService
         await _dbConnection.CreateTableAsync<MonthlyBudgetFixtureModel>();
         await _dbConnection.CreateTableAsync<ExpenseModel>();
         await _dbConnection.CreateTableAsync<UserModel>();
+        await _dbConnection.CreateTableAsync<SavingsPocketModel>();
 
         if (_hasBeenSeeded is false)
         {

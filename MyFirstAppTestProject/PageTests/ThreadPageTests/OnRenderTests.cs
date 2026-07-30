@@ -5,7 +5,7 @@ using UI.Pages;
 
 namespace MyFirstAppTestProject.PageTests.ThreadPageTests
 {
-    public class OnRenderTests : BaseComponentTest<ThreadPage>
+    public class OnRenderTests : BaseComponentTest<ExpensesPage>
     {
         [Test]
         public void SHOULD_render()

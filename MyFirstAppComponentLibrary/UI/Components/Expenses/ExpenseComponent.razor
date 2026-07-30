@@ -1,6 +1,5 @@
 ﻿@namespace MyFirstAppComponentLibrary.UI.Components
 @inject ExpenseRepository ExpenseRepository
-@inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 @inject IExpenseService ExpenseService
 @inject IToastService ToastService
 
@@ -79,18 +78,16 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        await MonthlyBudgetFixtureService.SubscribeAsync(async _ =>
+        await ExpenseService.SubscribeAsync(async _ =>
         {
-            await LoadExpense();
+            await LoadExpenseAsync();
         });
-
-        await LoadExpense();
+        await LoadExpenseAsync();
     }
 
-    private async Task LoadExpense()
+    private async Task LoadExpenseAsync()
     {
         _expense = await ExpenseRepository.GetByIdAsync(Id);
-        await InvokeAsync(StateHasChanged);
     }
 
     private void OpenPopupAsync()
@@ -109,5 +106,7 @@ else
                 await ToastService.ShowSuccessToastAsync("Paid!");
             }
         }
+
+        await LoadExpenseAsync();
     }
 }

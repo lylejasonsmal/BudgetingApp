@@ -1,4 +1,5 @@
-﻿@namespace MyFirstAppComponentLibrary.UI.Components
+﻿@using MyFirstApp.Domain.Helpers
+@namespace MyFirstAppComponentLibrary.UI.Components
 @inject UserRepository UserRepository
 @inject IUserService UserService
 
@@ -65,30 +66,38 @@
 @code {
     private UserModel? _user;
     private bool _showPopup;
-    private string _profileImageSrc;
+    private string? _profileImageSrc;
     private bool _showImageFullscreen;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await UserRepository.GetByIdAsync(1);
+        _ = ConvertUserImage();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(!firstRender) return;
-        
-        await UserService.SubscribeAsync(async model =>
+
+        await UserService.SubscribeAsync(model =>
         {
             _user = model;
-            await ConvertUserImage();
+            _ = ConvertUserImage();
+            return Task.CompletedTask;
         });
-
-        _user = await UserRepository.GetByIdAsync(1);
-        await ConvertUserImage();
     }
 
     private async Task ConvertUserImage()
     {
-        if(_user!.ProfileImage != null)
+        await TaskRunner.ExecuteAsync("Convert Image", async () =>
         {
-            _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
-        }
-        await InvokeAsync(StateHasChanged);
+            if (_user!.ProfileImage != null)
+            {
+                _profileImageSrc = $"data:image/png;base64,{Convert.ToBase64String(_user.ProfileImage)}";
+            }
+
+            await InvokeAsync(StateHasChanged);
+        });
     }
     private void OpenPopupAsync()
     {

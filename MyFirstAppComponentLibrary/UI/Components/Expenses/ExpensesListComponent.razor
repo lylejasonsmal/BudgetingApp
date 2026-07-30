@@ -1,17 +1,20 @@
-﻿@inject ExpenseRepository ExpenseRepository
+﻿@using MyFirstApp.Domain.Helpers
+@inject ExpenseRepository ExpenseRepository
 @inject IMonthlyBudgetFixtureService MonthlyBudgetFixtureService
 @inject IToastService ToastService
 
 <CardWrapperComponent HeaderText="Expenses" IsLargeText="true">
-    @if (_expenseIds is not null && _expenseIds.Count > 0)
+    <HeaderAction>
+        <button class="secondary-button filter-button" @onclick="OpenFilterPanelAsync">
+            <MaterialDesignIconComponent IconName="tune"/>
+            @_appliedFilters.Count
+        </button>
+    </HeaderAction>
+    <ChildContent>
+    @if (_expenseIds.Count > 0)
     {
         <div class="expenses-container">
-            <div class="info-card">
-                Filter & sort by your preferences:
-                <button class="secondary-button" @onclick="OpenFilterPanelAsync">
-                    <MaterialDesignIconComponent IconName="tune"/>
-                    @_appliedFilters.Count Applied
-                </button>
+            <div class="filter-expenses-panel">
             </div>
 
             @foreach (var expenseId in _expenseIds)
@@ -21,8 +24,19 @@
         </div>
 
         <button class="floating-button" @onclick="OpenAddExpensePopup">
-            <MaterialDesignIconComponent IconName="add" />
+            <MaterialDesignIconComponent IconName="add"/>
         </button>
+    }
+    else if (_expenseIds.Count == 0 & _appliedFilters.Count > 0)
+    {
+        <div class="card-body">
+            <div>
+                <h1 class="large-text">
+                    Hmm, No Expenses
+                </h1>
+                <p class="secondary-text">I notice you currently have no expenses listed. Try changing your expense filter preferences.</p>
+            </div>
+        </div>
     }
     else
     {
@@ -34,21 +48,15 @@
                 </h1>
                 <p class="secondary-text">I notice you currently have no expenses listed. Get started with your budgeting journey today! Add your first expense and take control of your finances.</p>
                 <button @onclick="OpenAddExpensePopup">Add Expense</button>
-                @if (_appliedFilters.Count > 0)
-                {
-                    <button class="secondary-button" @onclick="OpenFilterPanelAsync">
-                        <MaterialDesignIconComponent IconName="tune"/>
-                        @_appliedFilters.Count Applied
-                    </button>
-                }
             </div>
         </div>
     }
+    </ChildContent>
 </CardWrapperComponent>
 <AddExpensePopupComponent @bind-Visible="_showPopup" />
 
 
-<PopupWrapperComponent @bind-Visible="_openFiltersPanel" HeaderText="Filter Your Expenses">
+<PopupWrapperComponent @bind-Visible="_openFiltersPanel" HeaderText="Filter Your Expenses" ShowClosePopupButton="false">
     <h1>
         Apply Filters
     </h1>
@@ -69,34 +77,45 @@
     </div>
 
     <p>Sort by:</p>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesFirst) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesFirst)">
-        Paid Expenses (Ascending)
-    </button>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesLast) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesLast)">
-        Paid Expenses (Descending)
-    </button>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.AlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.AlphabeticalOrder)">
-        Alphabetical Order (A - Z)
-    </button>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.ReverseAlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.ReverseAlphabeticalOrder)">
-        Reverse Alphabetical Order (Z - A)
-    </button>
+    <div class="filters-panel">
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesFirst) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesFirst)">
+            Paid Expenses (Ascending)
+        </button>
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesLast) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesLast)">
+            Paid Expenses (Descending)
+        </button>
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.AlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.AlphabeticalOrder)">
+            Alphabetical Order (A - Z)
+        </button>
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.ReverseAlphabeticalOrder) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.ReverseAlphabeticalOrder)">
+            Reverse Alphabetical Order (Z - A)
+        </button>
+    </div>
 
     <p>Filter by:</p>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesOnly)">
-        Paid Expenses Only
-    </button>
-    <button class="@(_appliedFilters.Contains(ExpenseFilter.UnpaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.UnpaidExpensesOnly)">
-        Unpaid Expenses Only
-    </button>
+    
+    <div class="filters-panel">
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.PaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.PaidExpensesOnly)">
+            Paid Expenses Only
+        </button>
+        <button class="@(_appliedFilters.Contains(ExpenseFilter.UnpaidExpensesOnly) ? "" : "secondary-button")" @onclick="() => ToggleFilterAsync(ExpenseFilter.UnpaidExpensesOnly)">
+            Unpaid Expenses Only
+        </button>
+    </div>
 </PopupWrapperComponent>
 
 @code {
-    private IReadOnlyList<int>? _expenseIds;
+    private IReadOnlyList<int> _expenseIds = [];
     private bool _showPopup;
     private bool _openFiltersPanel;
     private MonthlyBudgetFixtureModel? _budgetFixtureModel;
     private readonly IList<ExpenseFilter> _appliedFilters = new List<ExpenseFilter>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
+        await LoadExpensesAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -105,16 +124,13 @@
         await MonthlyBudgetFixtureService.SubscribeAsync(async model =>
         {
             _budgetFixtureModel = model;
-            if (_budgetFixtureModel is null) return;
             await LoadExpensesAsync();
         });
-
-        _budgetFixtureModel = await MonthlyBudgetFixtureService.GetCurrentFixtureAsync();
-        await LoadExpensesAsync();
     }
 
     private async Task LoadExpensesAsync()
     {
+        if (_budgetFixtureModel is null) return;
         _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel!.Id, _appliedFilters);
         await InvokeAsync(StateHasChanged);
     }
@@ -131,16 +147,25 @@
 
     private async Task ApplyFiltersAsync()
     {
-        _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel?.Id, _appliedFilters);
-        _openFiltersPanel = false;
-        await ToastService.ShowSuccessToastAsync($"{_appliedFilters.Count} filter(s) applied.");
-        await InvokeAsync(StateHasChanged);
+        await TaskRunner.ExecuteAsync("Apply Expense Filters", async () =>
+        {
+            _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel!.Id, _appliedFilters);
+            _openFiltersPanel = false;
+            await ToastService.ShowSuccessToastAsync($"{_appliedFilters.Count} filter(s) applied.");
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async Task ClearFiltersAsync()
     {
-        _appliedFilters.Clear();
-        await InvokeAsync(StateHasChanged);
+        await TaskRunner.ExecuteAsync("Clear Expense Filters", async () =>
+        {
+            _appliedFilters.Clear();
+            _openFiltersPanel = false;
+            _expenseIds = await ExpenseRepository.LoadExpensesWithFiltersAppliedAsync(_budgetFixtureModel!.Id, _appliedFilters);
+            await ToastService.ShowSuccessToastAsync("Cleared filters.");
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async Task ToggleFilterAsync(ExpenseFilter filter)

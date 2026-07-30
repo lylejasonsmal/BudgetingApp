@@ -1,0 +1,101 @@
+﻿@inject IConnectivityService ConnectivityService
+@page "/developer"
+@using System.Collections.Concurrent
+@using MyFirstApp.Domain.Helpers
+
+<CardWrapperComponent>
+    <MaterialDesignIconComponent IconName="developer_board"/>
+    <h1 class="large-text">Stats For Nerds</h1>
+    <p class="secondary-text">This page give you insightful <strong>application-level monitoring.</strong></p>
+</CardWrapperComponent>
+
+<CardWrapperComponent HeaderText="Connectivity Status" IsLargeText="true">
+    <div class="info-card">
+        <strong>@(_isOnline? "Online":"Offline")</strong>
+        <ProgressBarComponent IsDanger="!_isOnline" Progress="1" Total="1"/>
+    </div>
+</CardWrapperComponent>
+
+<CardWrapperComponent HeaderText="Method Call Monitoring" IsLargeText="true">
+    @foreach (var methodCall in _methodCallsAndElapsedTime)
+    {
+        <CardWrapperComponent>
+            <h5>@(methodCall.Key)</h5>
+            <div class="method-call-summary">
+                <div>
+                    <span class="secondary-text">First Call</span>
+                    <p>@(methodCall.Value.TryPeek(out var firstCall) ? firstCall.TotalMilliseconds : TimeSpan.Zero)ms</p>
+                </div>
+
+                <div>
+                    <span class="secondary-text">Average</span>
+                    <p>@(methodCall.Value.Any() ? TimeSpan.FromTicks((long)methodCall.Value.Average(elapsed => elapsed.Ticks)).TotalMilliseconds : TimeSpan.Zero)ms</p>
+                </div>
+                
+                <div>
+                    <span class="secondary-text">Call Count</span>
+                    <p>@(methodCall.Value.Count) Calls</p>
+                </div>
+
+                <div>
+                    <span class="secondary-text">Total Elapsed Time</span>
+                    <p>@(methodCall.Value.Any() ? TimeSpan.FromTicks(methodCall.Value.Sum(x => x.Ticks)).TotalMilliseconds : TimeSpan.Zero)ms</p>
+                </div>
+                
+                <div>
+                    <span class="secondary-text">First Call's Share Of Total Elapsed Time</span>
+                    <p>
+                        @(methodCall.Value.Any() ? $"{(methodCall.Value.TryPeek(out var firstMethodCall) ? firstMethodCall.Ticks * 100.0 / methodCall.Value.Sum(x => x.Ticks) : 0):F2}%" : "0%")
+                    </p>
+                </div>
+                
+                <div>
+                    <span class="secondary-text">Observable Performance Improvement</span>
+                    <h4>
+                        @(methodCall.Value.Count > 1
+                            ? $"{firstCall.Ticks / methodCall.Value.Skip(1).Average(x => x.Ticks):F2}x faster"
+                            : "N/A")
+                    </h4>
+                </div>
+            </div>
+        </CardWrapperComponent>
+    }
+</CardWrapperComponent>
+
+@if (!_exceptionsThrown.IsEmpty)
+{
+    <CardWrapperComponent HeaderText="Exceptions Thrown" IsLargeText="true">
+        @foreach (var exception in _exceptionsThrown)
+        {
+            <CardWrapperComponent>
+                <h5>@(exception.Key.Message)</h5>
+                <div>
+                    <span class="secondary-text">Operation</span>
+                    <p>@exception.Value</p>
+                </div>
+            </CardWrapperComponent>
+        }
+    </CardWrapperComponent>
+}
+
+@code
+    {
+    private bool _isOnline;
+    private ConcurrentDictionary<string, ConcurrentQueue<TimeSpan>> _methodCallsAndElapsedTime = new();
+    private ConcurrentDictionary<Exception, string> _exceptionsThrown = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender) return;
+        _isOnline = ConnectivityService.IsConnected;
+        await ConnectivityService.SubscribeAsync(async connectivity =>
+        {
+            _isOnline = connectivity;   
+            await InvokeAsync(StateHasChanged);
+        });
+
+        _methodCallsAndElapsedTime = TaskRunner.GetNerdyStats();
+        _exceptionsThrown = TaskRunner.GetExceptionsThrown();
+        await InvokeAsync(StateHasChanged);
+    }
+}
